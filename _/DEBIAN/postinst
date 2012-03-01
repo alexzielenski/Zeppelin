@@ -1,0 +1,6 @@
+#!/bin/bash
+chown -R mobile:mobile /Library/Zeppelin
+chmod -R 755 /Library/Zeppelin
+chmod 755 /var/mobile/Library/Preferences/com.alexzielenski.zeppelin.plist
+chown mobile:mobile /var/mobile/Library/Preferences/com.alexzielenski.zeppelin.plist
+exit 0

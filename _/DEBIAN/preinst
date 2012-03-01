@@ -1,0 +1,9 @@
+#!/bin/bash
+# if [ -d /Library/Zeppelin ]
+# 	then
+# 	echo "Moving and linking Zeppelin directory"
+# 	cp -r /Library/Zeppelin /var/mobile/Library/Application\ Support/Zeppelin
+# 	rm -rf /Library/Zeppelin
+# 	ln -s /var/mobile/Library/Application\ Support/Zeppelin /Library/Zeppelin
+# fi
+exit 0

@@ -1,0 +1,10 @@
+{
+    entry = {
+	bundle = ZeppelinSettings;
+	cell = PSLinkCell;
+	detail = ZeppelinSettingsListController;
+	icon = Icon.png;
+	isController = 1;
+	label = Zeppelin;
+    };
+}
