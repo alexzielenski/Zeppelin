@@ -43,8 +43,8 @@ static NSMutableDictionary *_settings = nil;
         plistValue = [NSNumber numberWithBool:(![plistValue boolValue])];
     return plistValue;
 }
-- (void)donateButton:(id)sender {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=H6B999S6C3UX2"]];
+- (void)visitWebsite:(id)sender {
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.alexzielenski.com"]];
 }
 - (void)respring:(id)sender {
 	// set the enabled value

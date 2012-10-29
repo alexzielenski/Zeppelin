@@ -5,6 +5,12 @@
 #import "Categories/NSString+ZPAdditions.h"
 #import "Defines.h"
 
+@interface SBStatusBarDataManager (bleh)
+- (void)forceUpdate;
+- (void)_getBlackImageName:(NSString **)blackImageName silverImageName:(NSString **)silverImageName directory:(NSString **)directory forFakeCarrier:(NSString *)fakeCarrier;
+- (BOOL)_getBlackImageName:(NSString **)blackImageName silverImageName:(NSString **)silverImageName directory:(NSString **)directory forOperator:(NSString *)anOperator statusBarCarrierName:(NSString **)carrierName;
+@end
+
 static void setSettingsNotification(CFNotificationCenterRef center,
 									void *observer,
 									CFStringRef name,
@@ -15,7 +21,7 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 	NSDictionary *newSettings = [NSDictionary dictionaryWithContentsOfFile:PREFS_PATH];
 	[[ZPImageServer sharedServer] setSettings:newSettings];
 	[[%c(SBStatusBarDataManager) sharedDataManager] forceUpdate];
-	
+	NSLog(@"Zeppelin: %@", newSettings);
 	
 }
 
@@ -23,8 +29,8 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 - (void)setStatusBarItem:(int)item enabled:(BOOL)enabled {
 	ZPImageServer *server = [ZPImageServer sharedServer];
 	
-	if (item==4&&[server noLogo]&&[server enabled]) {
-		NSLog(@"Disabling Item: %i", item);
+	if (item==4 && [server noLogo] && [server enabled]) {
+		NSLog(@"Zeppelin: Disabling Item: %i", item);
 		%orig(item, NO);
 		return;
 	}
@@ -41,8 +47,10 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 - (void)_updateServiceItem {
 	%orig;
 	
+	NSLog(@"Zeppelin: update service item");
+	
 	ZPImageServer *server = [ZPImageServer sharedServer];
-	if (!server.enabled||server.useOldMethod)
+	if (!server.enabled || server.useOldMethod)
 		return;
 	
 	NSString *silver = [server currentSilverName];
@@ -51,7 +59,31 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 	
 	NSString *dir = [server currentThemeDirectory];
 	
-	if (IS_IOS_50_OR_LATER()) {
+	if (IS_IOS_60_OR_LATER()) {
+		NSLog(@"Zeppelin: iOS 6 or later");
+		StatusBarData60 *data = &MSHookIvar<StatusBarData60>(self, "_data");
+		NSLog(@"Zeppelin: %@, %@, %@", black, etched, dir);
+		
+		strncpy(data->serviceImages[0], [black cStringUsingEncoding:NSUTF8StringEncoding], 100);
+		strncpy(data->serviceImages[1], [etched cStringUsingEncoding:NSUTF8StringEncoding], 100);
+		strncpy(data->operatorDirectory, [dir fileSystemRepresentation], 1024);	
+		
+		data->serviceCrossfadeString[0] = '\0'; // eliminate the titles
+		data->serviceString[0]          = '\0';
+		data->serviceContentType        = 3;
+		
+		data->serviceImages[0][99]      = '\0'; // last index should be null
+		data->serviceImages[1][99]      = '\0';
+		data->operatorDirectory[1023]   = '\0';
+		
+		NSString *(&service)[2] = MSHookIvar<NSString *[2]>(self, "_serviceImages");
+		[service[0] release];
+		[service[1] release];
+		
+		service[0] = black.copy;
+		service[1] = etched.copy;
+		
+	} else if (IS_IOS_50()) {
 		StatusBarData50 *data = &MSHookIvar<StatusBarData50>(self, "_data");
 		
 		strncpy(data->serviceImages[0], [silver cStringUsingEncoding:NSUTF8StringEncoding], 100);
@@ -115,6 +147,30 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 	
 	[self _dataChanged];
 }
+
+%group iOS6
+- (BOOL)_getServiceImageNames:(NSString ***)names directory:(NSString **)directory forOperator:(NSString *)anOperator statusBarCarrierName:(NSString **)carrierName {
+	NSLog(@"Zeppelin: get service names");
+	ZPImageServer *server = [ZPImageServer sharedServer];
+	BOOL enabled = [server enabled];
+	
+	if (!enabled) {
+		return %orig(names, directory, anOperator, carrierName);
+	}
+	*directory   = [server currentThemeDirectory];
+	*carrierName = anOperator;
+	
+	NSString *black  = [server currentBlackName];
+	NSString *etched = [server currentEtchedName];
+		
+	names[0] = (NSString**)black;
+	names[1] = (NSString**)etched;
+	
+	return YES;
+}
+
+%end
+
 %group iOS5
 - (BOOL)_getServiceImageNames:(NSString ***)names directory:(NSString **)directory forOperator:(NSString *)anOperator statusBarCarrierName:(NSString **)carrierName {	
 	// NSLog(@"Zeppelin: Getting images for operator: %@", anOperator);
@@ -187,7 +243,10 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 	
 	%init();
 	
-	if (IS_IOS_50_OR_LATER()) {
+	if (IS_IOS_60_OR_LATER()) {
+		NSLog(@"Zeppelin: init ios 6");
+		%init (iOS6);	
+	} else if (IS_IOS_50()) {
 		%init (iOS5);
 	} else
 		%init (iOS4);

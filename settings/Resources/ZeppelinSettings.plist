@@ -54,11 +54,11 @@
 		</dict>
 		<dict>
 			<key>action</key>
-			<string>donateButton:</string>
+			<string>visitWebsite:</string>
 			<key>cell</key>
 			<string>PSButtonCell</string>
 			<key>label</key>
-			<string>Donate via Paypal</string>
+			<string>Visit My Website</string>
 		</dict>
 		<dict>
 			<key>cell</key>

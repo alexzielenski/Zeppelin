@@ -1,5 +1,6 @@
-export THEOS_DEVICE_IP=127.0.0.1#192.168.3.97
-#export GO_EASY_ON_ME=1
+export THEOS_DEVICE_IP=192.168.3.97
+export ARCHS=armv7
+# export GO_EASY_ON_ME=1
 
 include theos/makefiles/common.mk
 
