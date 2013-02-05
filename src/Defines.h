@@ -22,18 +22,13 @@
 #define kThemesDirectory     @"/Library/Zeppelin"
 #define DefaultPrefs         [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Batman", PrefsThemeKey, [NSNumber numberWithBool:YES], PrefsEnabledKey, nil]
 
-/*
- *  System Versioning Preprocessor Macros
- */ 
-// http://stackoverflow.com/questions/3339722/check-iphone-ios-version
-#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
-#define SYSTEM_VERSION_GREATER_THAN(v)              ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
-#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
-#define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
-#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
+@interface UIDevice (de)
+- (BOOL)iOSVersionIsAtLeast:(NSString *)vers;
+@end
 
-#define IS_IOS_60_OR_LATER() (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0"))
-#define IS_IOS_50()          (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") && !IS_IOS_60_OR_LATER())
+#define IS_IOS_60_OR_LATER() [[UIDevice currentDevice] iOSVersionIsAtLeast: @"6.0"]
+#define IS_IOS_50()          ([[UIDevice currentDevice] iOSVersionIsAtLeast: @"5.0"] && !IS_IOS_60_OR_LATER())
+#define IS_IOS_40()          ([[UIDevice currentDevice] iOSVersionIsAtLeast: @"4.2"] && !IS_IOS_50())
 
 typedef struct {
     char itemIsEnabled[23];
@@ -63,7 +58,7 @@ typedef struct {
     unsigned int locationIconType:1;
 } StatusBarData60;
 
-typedef struct {
+typedef struct  {
 	char itemIsEnabled[23];
 	char timeString[64];
 	int gsmSignalStrengthRaw;
@@ -90,8 +85,8 @@ typedef struct {
 	unsigned displayRawWifiSignal : 1;
 } StatusBarData50;
 
-typedef struct {
-	char itemIsEnabled[20];
+typedef struct  {
+	char itemIsEnabled[22];
 	char timeString[64];
 	int gsmSignalStrengthRaw;
 	int gsmSignalStrengthBars;
@@ -99,17 +94,19 @@ typedef struct {
 	char serviceImageBlack[100];
 	char serviceImageSilver[100];
 	char operatorDirectory[1024];
-	unsigned serviceContentType;
+	unsigned int serviceContentType;
 	int wifiSignalStrengthRaw;
 	int wifiSignalStrengthBars;
-	unsigned dataNetworkType;
+	unsigned int dataNetworkType;
 	int batteryCapacity;
-	unsigned batteryState;
+	unsigned int batteryState;
+	char notChargingString[150];
 	int bluetoothBatteryCapacity;
 	int thermalColor;
-	unsigned slowActivity : 1;
+	bool slowActivity;
 	char activityDisplayId[256];
-	unsigned bluetoothConnected : 1;
-	unsigned displayRawGSMSignal : 1;
-	unsigned displayRawWifiSignal : 1;
+	bool bluetoothConnected;
+	char recordingAppString[100];
+	bool displayRawGSMSignal;
+	bool displayRawWifiSignal;
 } StatusBarData42;

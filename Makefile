@@ -1,5 +1,6 @@
-export THEOS_DEVICE_IP=192.168.3.97
-export ARCHS=armv7
+export THEOS_DEVICE_IP=192.168.3.144
+export SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk
+# export ARCHS=armv7
 # export GO_EASY_ON_ME=1
 
 include theos/makefiles/common.mk

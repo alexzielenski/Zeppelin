@@ -48,7 +48,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Zeppelin 0.1.0</string>
+			<string>Zeppelin 1.1.1</string>
 			<key>isStaticText</key>
 			<true/>
 		</dict>

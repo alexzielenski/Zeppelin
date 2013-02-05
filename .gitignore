@@ -2,3 +2,5 @@
 .theos/packages/
 .theos/
 "Icon\r"
+_/*
+build/*

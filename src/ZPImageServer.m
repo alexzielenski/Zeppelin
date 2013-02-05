@@ -38,18 +38,23 @@
 	directory      = [[kThemesDirectory stringByAppendingPathComponent:name] retain];
 	noLogo         = [[settings objectForKey:PrefsThemeKey] isEqualToString:@"None"];
 }
+
 - (NSDictionary*)settings {
 	return settings;
 }
+
 - (BOOL)useOldMethod {
 	return [[settings objectForKey:PrefsOldMethodKey] boolValue];
 }
+
 - (BOOL)noLogo {
 	return noLogo;
 }
+
 - (BOOL)enabled {
 	return enabled;
 }
+
 - (NSString*)currentSilverName {
 	NSString *name = nil;
 	if (!(name = [settings objectForKey:PrefsAltSilverKey]))
@@ -58,6 +63,7 @@
 		name = [name stringByAppendingPathExtension:@"png"];
 	return name;
 }
+
 - (NSString*)currentBlackName {
 	NSString *name = nil;
 	if (!(name = [settings objectForKey:PrefsAltBlackKey]))
@@ -66,6 +72,7 @@
 		name = [name stringByAppendingPathExtension:@"png"];
 	return name;
 }
+
 - (NSString*)currentEtchedName {
 	NSString *name = nil;
 	if (!(name = [settings objectForKey:PrefsAltEtchedKey]))
@@ -76,21 +83,27 @@
 		name = [name stringByAppendingPathExtension:@"png"];
 	return name;
 }
+
 - (NSString*)currentSilverPath {
 	return [[self currentThemeDirectory] stringByAppendingPathComponent:[self currentSilverName]];
 }
+
 - (NSString*)currentBlackPath {
 	return [[self currentThemeDirectory] stringByAppendingPathComponent:[self currentBlackName]];
 }
+
 - (NSString*)currentEtchedPath {
 	return [[self currentThemeDirectory] stringByAppendingPathComponent:[self currentEtchedName]];
 }
+
 - (NSString*)currentThemeDirectory {
 	return directory;	
 }
+
 - (void)dealloc {
 	[directory release];
 	[settings release];
 	[super dealloc];
 }
+
 @end
