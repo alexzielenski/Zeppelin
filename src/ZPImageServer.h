@@ -4,6 +4,7 @@
 	BOOL enabled;
 	BOOL noLogo;
 	NSString *directory;
+	NSString *pack;
 	NSDictionary *settings;
 }
 + (ZPImageServer*)sharedServer;

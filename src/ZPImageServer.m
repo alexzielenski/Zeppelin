@@ -27,6 +27,10 @@
 		[settings release];
 		[directory release];
 	}
+	
+	if (pack)
+		[pack release], pack = nil;
+	
 	settings = [newSettings retain];
 	
 	if (!settings) {
@@ -37,6 +41,10 @@
 	enabled        = ([settings.allKeys containsObject:PrefsEnabledKey]) ? [[settings objectForKey:PrefsEnabledKey] boolValue] : NO;
 	directory      = [[kThemesDirectory stringByAppendingPathComponent:name] retain];
 	noLogo         = [[settings objectForKey:PrefsThemeKey] isEqualToString:@"None"];
+	
+	if ([settings.allKeys containsObject: PrefsPackKey])	
+		pack       = [[settings objectForKey: PrefsPackKey] retain];
+
 }
 
 - (NSDictionary*)settings {
@@ -97,7 +105,9 @@
 }
 
 - (NSString*)currentThemeDirectory {
-	return directory;	
+	if (pack)
+		return [directory stringByAppendingPathComponent: pack];
+	return directory;
 }
 
 - (void)dealloc {

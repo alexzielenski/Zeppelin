@@ -7,6 +7,8 @@
 #define PrefsAltSilverKey    @"altSilver" // would be silver-alt1@2x/.png
 #define PrefsAltBlackKey     @"altBlack"
 #define PrefsAltEtchedKey    @"altEtched"
+#define PrefsPackKey         @"pack"
+#define PrefsHiddenKey       @"hiddenThemes"
 
 #define IN_SPRINGBOARD()     ([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.apple.springboard"])
 #define IS_RETINA()          ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale] == 2)
@@ -20,7 +22,8 @@
 #define kEtchedImageName     @"etched"
 
 #define kThemesDirectory     @"/Library/Zeppelin"
-#define DefaultPrefs         [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Batman", PrefsThemeKey, [NSNumber numberWithBool:YES], PrefsEnabledKey, nil]
+#define kPacksDirectory      @"/Library/Zeppelin/Packs"
+#define DefaultPrefs         [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Zeppelin", PrefsPackKey, @"Batman", PrefsThemeKey, [NSNumber numberWithBool:YES], PrefsEnabledKey, nil]
 
 @interface UIDevice (de)
 - (BOOL)iOSVersionIsAtLeast:(NSString *)vers;

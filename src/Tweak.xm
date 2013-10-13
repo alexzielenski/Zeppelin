@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <SpringBoard/SBStatusBarDataManager.h>
+#import <SpringBoard70/SBStatusBarStateAggregator.h>
 
 #import "ZPImageServer.h"
 #import "Categories/NSString+ZPAdditions.h"
@@ -27,6 +28,7 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 	NSDictionary *newSettings = [NSDictionary dictionaryWithContentsOfFile:PREFS_PATH];
 	[[ZPImageServer sharedServer] setSettings:newSettings];
 	[[%c(SBStatusBarDataManager) sharedDataManager] forceUpdate];
+	[[%c(SBStatusBarStateAggregator) sharedInstance] forceUpdate];
 	NSLog(@"Zeppelin: %@", newSettings);
 	
 }
@@ -36,7 +38,7 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 - (void)setStatusBarItem:(int)item enabled:(BOOL)enabled {
 	ZPImageServer *server = [ZPImageServer sharedServer];
 	
-	if (item==4 && [server noLogo] && [server enabled]) {
+	if (item == 4 && [server noLogo] && [server enabled]) {
 		NSLog(@"Zeppelin: Disabling Item: %i", item);
 		%orig(item, NO);
 		return;
@@ -240,11 +242,102 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 
 %end
 
+%hook SBStatusBarStateAggregator
+%new(v@:)
+- (void)forceUpdate {
+	[self _updateServiceItem];
+
+	ZPImageServer *server = [ZPImageServer sharedServer];
+	if (server.noLogo && server.enabled) {
+		[self _setItem: 4 enabled: NO];
+	} else  {
+		[self _setItem: 4 enabled: YES];
+	}
+}
+
+- (void)_updateServiceItem {
+	%orig;
+	NSLog(@"Zeppelin: update service item");
+	
+	ZPImageServer *server = [ZPImageServer sharedServer];
+	if (!server.enabled || server.useOldMethod) {
+		NSLog(@"Zeppelin: Disabled");
+		return;
+	}
+	
+	NSString *black  = [server currentBlackName];
+	NSString *etched = [server currentEtchedName];
+	
+	NSString *dir = [server currentThemeDirectory];	
+
+	StatusBarData70 *data = &MSHookIvar<StatusBarData70>(self, "_data");
+					
+	strncpy(data->serviceImages[0], [black cStringUsingEncoding:NSUTF8StringEncoding], 100);
+	strncpy(data->serviceImages[1], [etched cStringUsingEncoding:NSUTF8StringEncoding], 100);
+	strncpy(data->operatorDirectory, [dir fileSystemRepresentation], 1024);	
+				
+	data->serviceCrossfadeString[0] = '\0'; // eliminate the titles
+	data->serviceString[0]          = '\0';
+	data->serviceContentType        = 3;
+				
+	data->serviceImages[0][99]      = '\0'; // last index should be null
+	data->serviceImages[1][99]      = '\0';
+	data->operatorDirectory[1023]   = '\0';
+			
+	NSString *(&service)[2] = MSHookIvar<NSString *[2]>(self, "_serviceImages");
+	[service[0] release];
+	[service[1] release];
+			
+	service[0] = black.copy;
+	service[1] = etched.copy;
+
+	NSString *&operatorDirectory = MSHookIvar<NSString *>(self, "_operatorDirectory");
+	if (operatorDirectory) {
+		[operatorDirectory release];
+		operatorDirectory = nil;
+	}
+	operatorDirectory = dir.copy;
+
+	NSString *&serviceString = MSHookIvar<NSString *>(self, "_serviceString");
+	if (serviceString) {
+		[serviceString release];
+		serviceString = nil;
+	}
+	[self _dataChanged];
+}
+
+- (BOOL)_getServiceImageNames:(NSString ***)names directory:(NSString **)directory forOperator:(NSString *)anOperator statusBarCarrierName:(NSString **)carrierName {	
+	NSLog(@"Zeppelin: Getting images for operator: %@", anOperator);
+	
+	ZPImageServer *server = [ZPImageServer sharedServer];
+	BOOL enabled = [server enabled];
+	
+	if (!enabled) {
+		return %orig(names, directory, anOperator, carrierName);
+	}
+	
+	*directory   = [server currentThemeDirectory];
+	*carrierName = anOperator;
+	
+	NSString *black  = [server currentBlackName];
+	NSString *etched = [server currentEtchedName];
+		
+	names[0] = (NSString **)black;
+	names[1] = (NSString **)etched;
+
+	return YES;
+}
+
+%end
+
 %ctor {
 
 	ZPImageServer *server = [ZPImageServer sharedServer];
 	NSLog(@"Zeppelin initialized");
 	(void)server;
+
+	NSFileManager *manager = [NSFileManager defaultManager];
+	[manager createDirectoryAtPath: kPacksDirectory withIntermediateDirectories: YES attributes: nil error: nil];
 
 	CFNotificationCenterRef r = CFNotificationCenterGetDarwinNotifyCenter();
 	CFNotificationCenterAddObserver(r, NULL, &setSettingsNotification,
@@ -261,5 +354,6 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 		NSLog(@"Zeppelin: init ios 4");
 		%init(iOS4);
 	}
+	
 }
 
