@@ -5,7 +5,7 @@ ZeppelinSettings_FILES = ZeppelinSettings.mm ZPAlignedTableViewCell.m UDTableVie
 ZeppelinSettings_INSTALL_PATH = /Library/PreferenceBundles
 ZeppelinSettings_FRAMEWORKS = UIKit 
 ZeppelinSettings_PRIVATE_FRAMEWORKS = Preferences
-ZeppelinSettings_CFLAGS = -I../src
+ZeppelinSettings_CFLAGS = -I../include
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

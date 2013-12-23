@@ -12,6 +12,7 @@
 	NSString *name = kBlackImageName;
 	if (IS_RETINA())
 		name = [name stringByAppendingString:@"@2x"];
+
 	return [name stringByAppendingPathExtension:@"png"];
 }
 + (NSString*)zp_silverName {

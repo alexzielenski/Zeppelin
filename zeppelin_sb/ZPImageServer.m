@@ -1,11 +1,6 @@
 #import "ZPImageServer.h"
 #import "Categories/NSString+ZPAdditions.h"
 
-@interface NSObject (ZPREFRESH)
-- (void)forceUpdate;
-+ (id)sharedDataManager;
-@end
-
 @implementation ZPImageServer
 + (ZPImageServer*)sharedServer {
 	static ZPImageServer *server = nil;
@@ -28,8 +23,8 @@
 		[directory release];
 	}
 
-	if (pack)
-		[pack release], pack = nil;
+	// if (pack)
+		// [pack release], pack = nil;
 
 	settings = [newSettings retain];
 
@@ -42,8 +37,8 @@
 	directory      = [[kThemesDirectory stringByAppendingPathComponent:name] retain];
 	noLogo         = [[settings objectForKey:PrefsThemeKey] isEqualToString:@"None"];
 
-	if ([settings.allKeys containsObject: PrefsPackKey])
-		pack       = [[settings objectForKey: PrefsPackKey] retain];
+	// if ([settings.allKeys containsObject: PrefsPackKey])
+		// pack       = [[settings objectForKey: PrefsPackKey] retain];
 
 }
 
@@ -113,6 +108,7 @@
 - (void)dealloc {
 	[directory release];
 	[settings release];
+	// [pack release];
 	[super dealloc];
 }
 

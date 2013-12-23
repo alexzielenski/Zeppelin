@@ -8,17 +8,11 @@ include theos/makefiles/common.mk
 
 THEOS_BUILD_DIR = build
 
-TWEAK_NAME = Zeppelin
-Zeppelin_FILES  = src/Tweak.xm src/ZPImageServer.m src/Categories/NSString+ZPAdditions.m
-Zeppelin_CFLAGS = -I./src
-
-Zeppelin_FRAMEWORKS = UIKit
-
 TARGET_IPHONEOS_DEPLOYMENT_VERSION = 7.0
 
-include $(THEOS_MAKE_PATH)/tweak.mk
-
 SUBPROJECTS = settings
+SUBPROJECTS += zeppelin_sb
+SUBPROJECTS += zeppelin_uikit
 include $(THEOS_MAKE_PATH)/aggregate.mk
 
 after-stage::

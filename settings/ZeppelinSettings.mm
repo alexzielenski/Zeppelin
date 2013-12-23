@@ -7,6 +7,13 @@
 #import "Defines.h"
 #import "UDTableView.h"
 
+@implementation UIDevice (OSVersion)
+- (BOOL)iOSVersionIsAtLeast:(NSString*)version {
+    NSComparisonResult result = [[self systemVersion] compare:version options:NSNumericSearch];
+    return (result == NSOrderedDescending || result == NSOrderedSame);
+}
+@end
+
 @interface ZPTheme : NSObject {
 	NSString *name;
 	NSString *pack;
@@ -21,8 +28,6 @@
 + (ZPTheme*)themeWithPath:(NSString*)path;
 - (id)initWithPath:(NSString*)path;
 @end
-
-
 
 static NSMutableDictionary *_settings = nil;
 

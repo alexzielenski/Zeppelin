@@ -1,10 +1,9 @@
-#import <UIKit/UIKit.h>
 #define PrefsThemeKey        @"theme"
 #define PrefsCarrierTextKey  @"carrierText"
 #define PrefsUseTextKey      @"useText"
 #define PrefsEnabledKey      @"enabled"
 #define PrefsOldMethodKey    @"useOldMethod"
-#define PrefsAltSilverKey    @"altSilver" // would be silver-alt1@2x/.png
+#define PrefsAltSilverKey    @"altSilver" // would be silver-alt1@2x.png
 #define PrefsAltBlackKey     @"altBlack"
 #define PrefsAltEtchedKey    @"altEtched"
 #define PrefsPackKey         @"pack"
@@ -17,8 +16,8 @@
 #define kZeppelinSettingsChanged         @"com.alexzielenski.zeppelin/settingsChanged"
 #define kZeppelinSettingsRefreshSettings @"com.alexzielenski.zeppelin/refreshSettings"
 
-#define kBlackImageName      @"black"
-#define kSilverImageName     @"silver"
+#define kBlackImageName      IS_IOS_70_OR_LATER() ? @"light" : @"black"
+#define kSilverImageName     IS_IOS_70_OR_LATER() ? @"dark" : @"silver"
 #define kEtchedImageName     @"etched"
 
 #define kThemesDirectory     @"/Library/Zeppelin"
@@ -30,9 +29,39 @@
 @end
 
 #define IS_IOS_70_OR_LATER() [[UIDevice currentDevice] iOSVersionIsAtLeast: @"7.0"]
-#define IS_IOS_60_OR_LATER() ([[UIDevice currentDevice] iOSVersionIsAtLeast: @"6.0"] && !IS_IOS_70_OR_LATER())
-#define IS_IOS_50()          ([[UIDevice currentDevice] iOSVersionIsAtLeast: @"5.0"] && !IS_IOS_60_OR_LATER())
-#define IS_IOS_40()          ([[UIDevice currentDevice] iOSVersionIsAtLeast: @"4.2"] && !IS_IOS_50())
+#define IS_IOS_60()          ([[UIDevice currentDevice] iOSVersionIsAtLeast: @"6.0"] && !IS_IOS_70_OR_LATER())
+#define IS_IOS_50()          ([[UIDevice currentDevice] iOSVersionIsAtLeast: @"5.0"] && !IS_IOS_60() && !IS_IOS_70_OR_LATER())
+#define IS_IOS_40()          ([[UIDevice currentDevice] iOSVersionIsAtLeast: @"4.2"] && !IS_IOS_50() && !IS_IOS_60() && !IS_IOS_70_OR_LATER())
+
+typedef struct {
+    BOOL itemIsEnabled[25];
+    BOOL timeString[64];
+    int gsmSignalStrengthRaw;
+    int gsmSignalStrengthBars;
+    char serviceString[100];
+    char serviceCrossfadeString[100];
+    char serviceImages[2][100];
+    char operatorDirectory[1024];
+    unsigned serviceContentType;
+    int wifiSignalStrengthRaw;
+    int wifiSignalStrengthBars;
+    unsigned dataNetworkType;
+    int batteryCapacity;
+    unsigned batteryState;
+    BOOL batteryDetailString[150];
+    int bluetoothBatteryCapacity;
+    int thermalColor;
+    unsigned thermalSunlightMode : 1;
+    unsigned slowActivity : 1;
+    unsigned syncActivity : 1;
+    BOOL activityDisplayId[256];
+    unsigned bluetoothConnected : 1;
+    unsigned displayRawGSMSignal : 1;
+    unsigned displayRawWifiSignal : 1;
+    unsigned locationIconType : 1;
+    unsigned quietModeInactive : 1;
+    unsigned tetheringConnectionCount;
+} StatusBarData70;
 
 typedef struct {
     char itemIsEnabled[23];
