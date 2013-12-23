@@ -69,7 +69,6 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 %hook SBStatusBarStateAggregator
 %new(v@:)
 - (void)forceUpdate {
-	NSLog(@"Zeppelin update");
 	[self _updateServiceItem];
 	// [self _postItem: 4 withState: 9];
 	[self _notifyItemChanged: 4];
@@ -120,6 +119,8 @@ static char kOPERATORDIRECTORY;
 
 - (BOOL)updateForNewData:(id)arg1 actions:(int)arg2 {
 	StatusBarData70 *data = (StatusBarData70*)[arg1 rawData];
+
+	[self updateContentsAndWidth];
 
 	[self willChangeValueForKey: @"contentsImage"];
 	objc_setAssociatedObject(self, &kOPERATORDIRECTORY, [NSString stringWithCString: data->operatorDirectory encoding: NSUTF8StringEncoding], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
