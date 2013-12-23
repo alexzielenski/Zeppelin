@@ -12,29 +12,6 @@
 #import "Defines.h"
 #import <objc/runtime.h>
 
-// @implementation _UILegibilityImageSet
-// @synthesize image;
-// @synthesize shadowImage;
-
-// + (id)imageFromImage:(id)arg1 withShadowImage:(id)arg2 {
-// 	return [[[self alloc] initWithImage: arg1 shadowImage: arg2] autorelease];
-// }
-// - (void)dealloc {
-// 	self.image = nil;
-// 	self.shadowImage = nil;
-// 	[super dealloc];
-// }
-
-// - (id)initWithImage:(id)arg1 shadowImage:(id)arg2 {
-// 	if ((self = [super init])) {
-// 		self.image = arg1;
-// 		self.shadowImage = arg2;
-// 	}
-
-// 	return self;
-// }
-
-// @end
 
 @implementation UIDevice (OSVersion)
 - (BOOL)iOSVersionIsAtLeast:(NSString*)version {
