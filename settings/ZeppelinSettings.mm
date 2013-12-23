@@ -193,13 +193,9 @@ static NSMutableDictionary *_settings = nil;
 			self.whiteImage = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:blackName]];
 		}
 		
-		if (self.whiteImage&&!self.image)
-			self.image = self.whiteImage;
-		else if (self.image&&!self.whiteImage)
-			self.whiteImage = self.image;
 			
 		// no images? kill myself
-		if (!self.whiteImage||!self.image) {
+		if (!self.whiteImage || !self.image) {
 			[self release];
 			return nil;
 		}
