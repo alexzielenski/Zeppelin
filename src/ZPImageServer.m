@@ -27,12 +27,12 @@
 		[settings release];
 		[directory release];
 	}
-	
+
 	if (pack)
 		[pack release], pack = nil;
-	
+
 	settings = [newSettings retain];
-	
+
 	if (!settings) {
 		NSLog(@"Zeppelin: No settings found. Reverting to defaults.");
 		settings = [DefaultPrefs retain];
@@ -41,8 +41,8 @@
 	enabled        = ([settings.allKeys containsObject:PrefsEnabledKey]) ? [[settings objectForKey:PrefsEnabledKey] boolValue] : NO;
 	directory      = [[kThemesDirectory stringByAppendingPathComponent:name] retain];
 	noLogo         = [[settings objectForKey:PrefsThemeKey] isEqualToString:@"None"];
-	
-	if ([settings.allKeys containsObject: PrefsPackKey])	
+
+	if ([settings.allKeys containsObject: PrefsPackKey])
 		pack       = [[settings objectForKey: PrefsPackKey] retain];
 
 }
@@ -85,7 +85,7 @@
 	NSString *name = nil;
 	if (!(name = [settings objectForKey:PrefsAltEtchedKey]))
 		name = [NSString zp_etchedName];
-	
+
 	// append extension if none
 	if (![name.pathExtension isEqualToString:@"png"])
 		name = [name stringByAppendingPathExtension:@"png"];
@@ -105,8 +105,8 @@
 }
 
 - (NSString*)currentThemeDirectory {
-	if (pack)
-		return [directory stringByAppendingPathComponent: pack];
+	// if (pack)
+		// return [directory stringByAppendingPathComponent: pack];
 	return directory;
 }
 

@@ -29,7 +29,8 @@
 - (BOOL)iOSVersionIsAtLeast:(NSString *)vers;
 @end
 
-#define IS_IOS_60_OR_LATER() [[UIDevice currentDevice] iOSVersionIsAtLeast: @"6.0"]
+#define IS_IOS_70_OR_LATER() [[UIDevice currentDevice] iOSVersionIsAtLeast: @"7.0"]
+#define IS_IOS_60_OR_LATER() ([[UIDevice currentDevice] iOSVersionIsAtLeast: @"6.0"] && !IS_IOS_70_OR_LATER())
 #define IS_IOS_50()          ([[UIDevice currentDevice] iOSVersionIsAtLeast: @"5.0"] && !IS_IOS_60_OR_LATER())
 #define IS_IOS_40()          ([[UIDevice currentDevice] iOSVersionIsAtLeast: @"4.2"] && !IS_IOS_50())
 

@@ -1,7 +1,7 @@
 export THEOS_DEVICE_IP=127.0.0.1
 export THEOS_DEVICE_PORT=2222
-export SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk
-# export ARCHS=armv7
+export SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk
+export ARCHS=armv7 armv7s
 # export GO_EASY_ON_ME=1
 
 include theos/makefiles/common.mk
@@ -13,9 +13,8 @@ Zeppelin_FILES  = src/Tweak.xm src/ZPImageServer.m src/Categories/NSString+ZPAdd
 Zeppelin_CFLAGS = -I./src
 
 Zeppelin_FRAMEWORKS = UIKit
-#Zeppelin_PRIVATE_FRAMEWORKS = AppSupport
 
-TARGET_IPHONEOS_DEPLOYMENT_VERSION = 4.2
+TARGET_IPHONEOS_DEPLOYMENT_VERSION = 7.0
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 

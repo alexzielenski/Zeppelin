@@ -221,7 +221,7 @@ static NSMutableDictionary *_settings = nil;
 	UITableView *_tableView;
 	NSMutableArray *_themes;
 	NSMutableArray *_packs;
-	NSInteger selectedRow;
+	NSString *selectedTheme;
 }
 @property (nonatomic, retain) NSMutableArray *themes;
 @property (nonatomic, retain) NSMutableArray *packs;
@@ -285,19 +285,14 @@ static NSMutableDictionary *_settings = nil;
 	[self.themes sortUsingDescriptors:[NSArray arrayWithObject:descriptor]];
 	[descriptor release]; // sort
 	
-	NSArray *themeNames = [_themes valueForKey:@"name"];
-	selectedRow = [themeNames indexOfObject:[_settings objectForKey:PrefsThemeKey]];
-	if (selectedRow == NSNotFound)
-		selectedRow = [themeNames indexOfObject:@"Batman"];
-	if (selectedRow == NSNotFound)
-		selectedRow = 0;
+	selectedTheme = [_settings objectForKey:PrefsThemeKey];
+	if (!selectedTheme)
+		selectedTheme = @"Batman";
 }
 
 - (void)viewWillAppear:(BOOL)animated {
 	[self refreshList];
 	self.navigationItem.rightBarButtonItem = [self editButtonItem];
-	NSLog(@"Zeppelin: %@, %@, %@", self.navigationItem, self.navigationItem.rightBarButtonItem, self.editButtonItem);
-
 }
 
 - (NSArray *)currentThemes
@@ -405,11 +400,13 @@ static NSMutableDictionary *_settings = nil;
 	cell.textLabel.text = theme.name;	
 	cell.imageView.image = theme.image;
 	cell.imageView.highlightedImage = theme.whiteImage;
-		
-	if (theme == [self.themes objectAtIndex: selectedRow])
+	cell.selected = NO;
+
+	if ([theme.name isEqualToString: selectedTheme]) {
 		cell.accessoryType = UITableViewCellAccessoryCheckmark;
-	else
+	} else {
 		cell.accessoryType = UITableViewCellAccessoryNone;
+	}
 
     return cell;
 }
@@ -421,21 +418,21 @@ static NSMutableDictionary *_settings = nil;
 	
 		UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
 	
+		UITableViewCell *old = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow: [[self.currentThemes valueForKey:@"name"] indexOfObject: selectedTheme] inSection: 0]];
+		if (old)
+			old.accessoryType = UITableViewCellAccessoryNone;
+
 		// check it off
 		cell.accessoryType = UITableViewCellAccessoryCheckmark;
-		// uncheck prev
-		UITableViewCell *old = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:selectedRow inSection:0]];
-		if (old != cell) {
-			old.accessoryType = UITableViewCellAccessoryNone;
-		}
-	
+
 		ZPTheme *theme = (ZPTheme*)[self.currentThemes objectAtIndex:indexPath.row];
 	
 		// make the title changes
 		ZeppelinSettingsListController *ctrl = (ZeppelinSettingsListController*)self.parentController;
 		[ctrl setCurrentTheme:theme];
 	
-		selectedRow = indexPath.row;
+		selectedTheme = theme.name;
+
 	} else {
 		// future pack functionality
 	}
