@@ -360,16 +360,16 @@ static NSMutableDictionary *_settings = nil;
 }
 
 /* UITableViewDelegate / UITableViewDataSource Methods {{{ */
-- (int) numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
-- (id) tableView:(UITableView *)tableView titleForHeaderInSection:(int)section {
+- (id) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 
     return @"";
 }
 
-- (int) tableView:(UITableView *)tableView numberOfRowsInSection:(int)section {
+- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	return self.currentThemes.count;
 }
 
