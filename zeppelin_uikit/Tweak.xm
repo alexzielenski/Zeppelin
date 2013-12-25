@@ -47,15 +47,15 @@ static char kOPERATORDIRECTORY;
 }
 
 - (CGFloat)extraLeftPadding {
-	return 0.0;
+	return 3.0;
 }
 
 - (CGFloat)extraRightPadding {
-	return 2.0;
+	return 3.0;
 }
 
-- (CGFloatw)standardPadding {
-	return 3.0;
+- (CGFloat)standardPadding {
+	return 0.0;
 }
 
 %end
