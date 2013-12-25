@@ -46,4 +46,16 @@ static char kOPERATORDIRECTORY;
 								 withShadowImage: [image _imageForLegibilitySettings: [_UILegibilitySettings sharedInstanceForStyle: [self legibilityStyle]] strength: [self legibilityStrength]]];
 }
 
+- (CGFloat)extraLeftPadding {
+	return 0.0;
+}
+
+- (CGFloat)extraRightPadding {
+	return 2.0;
+}
+
+- (CGFloatw)standardPadding {
+	return 3.0;
+}
+
 %end
