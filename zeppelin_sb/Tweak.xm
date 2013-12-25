@@ -23,12 +23,10 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 									CFStringRef name,
 									const void *object,
 									CFDictionaryRef userInfo) {
-	NSLog(@"Zeppelin: Reloading settings : %@", (NSDictionary*)userInfo);
-
 	NSDictionary *newSettings = [NSDictionary dictionaryWithContentsOfFile:PREFS_PATH];
 	[[ZPImageServer sharedServer] setSettings:newSettings];
 
-	if (%c(SBStatusBarStateAggregator)) {
+	if (%c(SBStatusBarStateAggregator) != NULL) {
 		[[%c(SBStatusBarStateAggregator) sharedInstance] forceUpdate];
 	} else {
 	    [[%c(SBStatusBarDataManager) sharedDataManager] forceUpdate];
@@ -40,11 +38,14 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 // SpringBoard is the only process that will read the preferences
 // it then hands off the information about the wherabouts of the image
 // to the other apps in ios7
+%group iOS7
+
 %hook SBStatusBarStateAggregator
 %new(v@:)
 - (void)forceUpdate {
 	[self _updateServiceItem];
 	// [self _postItem: 4 withState: 9];
+
 	[self _notifyItemChanged: 4];
 }
 
@@ -95,15 +96,17 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 
 %end
 
+%end
+
 %hook SBStatusBarDataManager
 
 - (void)setStatusBarItem:(int)item enabled:(BOOL)enabled {
         ZPImageServer *server = [ZPImageServer sharedServer];
         
-        if (item==4 && [server noLogo] && [server enabled]) {
-                NSLog(@"Zeppelin: Disabling Item: %i", item);
-                %orig(item, NO);
-                return;
+        if (item == 4 && [server noLogo] && [server enabled]) {
+            NSLog(@"Zeppelin: Disabling Item: %i", item);
+            %orig(item, NO);
+            return;
         }
         %orig(item, enabled);
 }
@@ -135,73 +138,73 @@ static void setSettingsNotification(CFNotificationCenterRef center,
         NSString *dir = [server currentThemeDirectory];
         
         if (IS_IOS_60()) {
-                StatusBarData60 *data = &MSHookIvar<StatusBarData60>(self, "_data");
+            StatusBarData60 *data = &MSHookIvar<StatusBarData60>(self, "_data");
                                         
-                strncpy(data->serviceImages[0], [black cStringUsingEncoding:NSUTF8StringEncoding], 100);
-                strncpy(data->serviceImages[1], [etched cStringUsingEncoding:NSUTF8StringEncoding], 100);
-                strncpy(data->operatorDirectory, [dir fileSystemRepresentation], 1024);        
-                                        
-                data->serviceCrossfadeString[0] = '\0'; // eliminate the titles
-                data->serviceString[0]          = '\0';
-                data->serviceContentType        = 3;
-                                        
-                data->serviceImages[0][99]      = '\0'; // last index should be null
-                data->serviceImages[1][99]      = '\0';
-                data->operatorDirectory[1023]   = '\0';
-                                
-                NSString *(&service)[2] = MSHookIvar<NSString *[2]>(self, "_serviceImages");
-                [service[0] release];
-                [service[1] release];
-                                
-                service[0] = black.copy;
-                service[1] = etched.copy;
+            strncpy(data->serviceImages[0], [black cStringUsingEncoding:NSUTF8StringEncoding], 100);
+            strncpy(data->serviceImages[1], [etched cStringUsingEncoding:NSUTF8StringEncoding], 100);
+            strncpy(data->operatorDirectory, [dir fileSystemRepresentation], 1024);        
+
+            data->serviceCrossfadeString[0] = '\0'; // eliminate the titles
+            data->serviceString[0]          = '\0';
+            data->serviceContentType        = 3;
+
+            data->serviceImages[0][99]      = '\0'; // last index should be null
+            data->serviceImages[1][99]      = '\0';
+            data->operatorDirectory[1023]   = '\0';
+
+            NSString *(&service)[2] = MSHookIvar<NSString *[2]>(self, "_serviceImages");
+            [service[0] release];
+            [service[1] release];
+
+            service[0] = black.copy;
+            service[1] = etched.copy;
                         
         } else  if (IS_IOS_50()) {
-                StatusBarData50 *data = &MSHookIvar<StatusBarData50>(self, "_data");
+            StatusBarData50 *data = &MSHookIvar<StatusBarData50>(self, "_data");
                                 
-                strncpy(data->serviceImages[0], [silver cStringUsingEncoding:NSUTF8StringEncoding], 100);
-                strncpy(data->serviceImages[1], [black cStringUsingEncoding:NSUTF8StringEncoding], 100);
-                strncpy(data->serviceImages[2], [etched cStringUsingEncoding:NSUTF8StringEncoding], 100);        
-                strncpy(data->operatorDirectory, [dir fileSystemRepresentation], 1024);        
+            strncpy(data->serviceImages[0], [silver cStringUsingEncoding:NSUTF8StringEncoding], 100);
+            strncpy(data->serviceImages[1], [black cStringUsingEncoding:NSUTF8StringEncoding], 100);
+            strncpy(data->serviceImages[2], [etched cStringUsingEncoding:NSUTF8StringEncoding], 100);        
+            strncpy(data->operatorDirectory, [dir fileSystemRepresentation], 1024);        
                 
-                data->serviceCrossfadeString[0] = '\0'; // eliminate the titles
-                data->serviceString[0]          = '\0';
-                data->serviceContentType        = 3;
+            data->serviceCrossfadeString[0] = '\0'; // eliminate the titles
+            data->serviceString[0]          = '\0';
+            data->serviceContentType        = 3;
                                 
-                data->serviceImages[0][99]      = '\0'; // last index should be null
-                data->serviceImages[1][99]      = '\0';
-                data->serviceImages[2][99]      = '\0';
-                data->operatorDirectory[1023]   = '\0';
+            data->serviceImages[0][99]      = '\0'; // last index should be null
+            data->serviceImages[1][99]      = '\0';
+            data->serviceImages[2][99]      = '\0';
+            data->operatorDirectory[1023]   = '\0';
                                 
-                NSString *(&service)[3] = MSHookIvar<NSString *[3]>(self, "_serviceImages");
-                [service[0] release];
-                [service[1] release];
-                [service[2] release];
+            NSString *(&service)[3] = MSHookIvar<NSString *[3]>(self, "_serviceImages");
+            [service[0] release];
+            [service[1] release];
+            [service[2] release];
                                 
-                service[0] = silver.copy;
-                service[1] = black.copy;
-                service[2] = etched.copy;
+            service[0] = silver.copy;
+            service[1] = black.copy;
+            service[2] = etched.copy;
                 
         } else {
-                 StatusBarData42 *data = &MSHookIvar<StatusBarData42>(self, "_data");
-                         
-                 strncpy(data->serviceImageBlack, [black cStringUsingEncoding:NSUTF8StringEncoding], 100);
-                 strncpy(data->serviceImageSilver, [silver cStringUsingEncoding:NSUTF8StringEncoding], 100);                
-                 strncpy(data->operatorDirectory, [dir fileSystemRepresentation], 1024);        
+            StatusBarData42 *data = &MSHookIvar<StatusBarData42>(self, "_data");
+                
+            strncpy(data->serviceImageBlack, [black cStringUsingEncoding:NSUTF8StringEncoding], 100);
+            strncpy(data->serviceImageSilver, [silver cStringUsingEncoding:NSUTF8StringEncoding], 100);                
+            strncpy(data->operatorDirectory, [dir fileSystemRepresentation], 1024);        
                  
-                 data->serviceImageBlack[99]     = '\0';
-                 data->serviceImageSilver[99]    = '\0';
-                 data->serviceString[0]          = '\0';
-                 data->operatorDirectory[1023]   = '\0';
-                 data->serviceContentType        = 3;
+            data->serviceImageBlack[99]     = '\0';
+            data->serviceImageSilver[99]    = '\0';
+            data->serviceString[0]          = '\0';
+            data->operatorDirectory[1023]   = '\0';
+            data->serviceContentType        = 3;
                  
-                 NSString *&serviceImageBlack  = MSHookIvar<NSString *>(self, "_serviceImageBlack");
-                 NSString *&serviceImageSilver = MSHookIvar<NSString *>(self, "_serviceImageSilver");
-                 [serviceImageBlack release];
-                 [serviceImageSilver release];
+            NSString *&serviceImageBlack  = MSHookIvar<NSString *>(self, "_serviceImageBlack");
+            NSString *&serviceImageSilver = MSHookIvar<NSString *>(self, "_serviceImageSilver");
+            [serviceImageBlack release];
+            [serviceImageSilver release];
                  
-                 serviceImageBlack  = black.copy;
-                 serviceImageSilver = silver.copy;
+            serviceImageBlack  = black.copy;
+            serviceImageSilver = silver.copy;
                          
          }
         
@@ -317,12 +320,13 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 
 	if (%c(SBStatusBarStateAggregator)) {
 		NSLog(@"Zeppelin: loading ios 7+");
+        %init(iOS7);
 	} else if ([%c(SBStatusBarDataManager) instancesRespondToSelector: @selector(_getServiceImageNames:directory:forOperator:statusBarCarrierName:)] ) {
-            NSLog(@"Zeppelin: loading ios 5 or 6");
-            %init(iOS5);        
-    } else {
-            NSLog(@"Zeppelin: init ios 4");
-            %init(iOS4);
+        NSLog(@"Zeppelin: loading ios 5 or 6");
+        %init(iOS5);        
+    } else if (NO) {
+        NSLog(@"Zeppelin: init ios 4");
+        %init(iOS4);
     }
 }
 

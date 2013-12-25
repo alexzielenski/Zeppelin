@@ -5,6 +5,7 @@
 #import <UIKit70/_UILegibilityImageSet.h>
 #import <UIKit70/UIImage-_UILegibility.h>
 #import <UIKit70/_UILegibilitySettings.h>
+#import <UIKit70/UIStatusBarForegroundStyleAttributes.h>
 
 %hook UIStatusBarServiceItemView
 static char kBLACKIMAGE;
@@ -32,7 +33,7 @@ static char kOPERATORDIRECTORY;
 		return %orig;
 	}
 
-	UIColor *tint = [(id)self.foregroundStyle tintColor];
+	UIColor *tint = [(UIStatusBarForegroundStyleAttributes *)[(UIStatusBarServiceItemView *)self valueForKey: @"foregroundStyle"] tintColor];
 	CGFloat white;
 
 	[tint getWhite: &white alpha: NULL];

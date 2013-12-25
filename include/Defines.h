@@ -1,3 +1,6 @@
+#import <UIKit/UIKit.h>
+#import <substrate.h>
+
 #define PrefsThemeKey        @"theme"
 #define PrefsCarrierTextKey  @"carrierText"
 #define PrefsUseTextKey      @"useText"
