@@ -1,0 +1,107 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww17340\viewh23940\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\b\fs36 \cf0 How to make Zeppelin themes\
+\
+
+\b0\fs28 A Zeppelin theme includes up to 10 images, all with a distinct purpose. Some images are optional depending upon whether or not a theme supports a given iOS version. The images are named for the context they will be used in rather than the actual content of the image. For example silver.png is used when the statusbar is silver and black.png is used when it is black.\
+\
+
+\b\fs34 Sizing\
+\
+
+\b0\fs28 All images should have a high of 20px in 1x and 40px for retina (@2x) \'96 but don\'92t fille the entire image unless you want it to take the entire height of the statusbar. I usually leave 3-4px padding on the top and bottom (6-8px on retina).\
+\
+
+\b\fs34 Naming\
+
+\b0\fs28 \
+
+\b silver
+\b0 : (iOS 4/5) shown on the silver, opaque statusbar. Should be a colored (usually blue) gradient with a white drop shadow.\
+\
+
+\b black: 
+\b0 (iOS 4/5/6) shown when the statusbar. Should be very light grey with a very transparent, glow or drop shadow above it.\
+
+\b \
+etched:
+\b0  (iOS 5/6) shown in notification center. Should be white with a 90\'b0 black drop shadow below it.\
+
+\b \
+light:
+\b0  (iOS 7+) shown when the statusbar is light. Should be a black silhouette of whatever shape you are using.\
+
+\b \
+dark: 
+\b0 (iOS 7+) shown when the statusbar is dark. Should be a white silhouette of whatever shape you are using.\
+\
+
+\b\fs34 Filenames\
+\
+
+\b0\fs28 Any theme you create should have a 1x and 2x representation of each image. So the possible file names are:\
+\
+	silver.png\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 	silver@2x.png\
+	black.png\
+	black@2x.png\
+	etched.png\
+	etched@2x.png\
+	light.png\
+	light@2x.png\
+	dark.png\
+	dark@2x.png\
+\
+You do not need to have all of the images present. But here are breakdowns of the files you need for targeting each OS version:\
+\
+
+\b iOS4:\
+	
+\b0 silver.png\
+	silver@2x.png\
+	black.png\
+	black@2x.png\
+\
+iOS5:\
+	silver.png\
+	silver@2x.png\
+	black.png\
+	black@2x.png\
+	etched.png\
+	etched@2x.png\
+\
+iOS6:\
+	black.png\
+	black@2x.png\
+	etched.png\
+	etched@2x.png\
+\
+iOS7: *themes on iOS7 without these files won\'92t even be selectable in Zeppelin\
+	light.png\
+	light@2x.png\
+	dark.png\
+	dark@2x.png\
+	\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\b\fs34 \cf0 Styles
+\b0\fs28 \
+\
+A template can be found at {\field{\*\fldinst{HYPERLINK "https://github.com/alexzielenski/Zeppelin/blob/master/Zeppelin%20Logo%20PSD.psd"}}{\fldrslt https://github.com/alexzielenski/Zeppelin/blob/master/Zeppelin%20Logo%20PSD.psd}} with layer styles used for 
+\b silver, black, 
+\b0 and 
+\b etched.
+\b0 \
+\
+No template is needed for 
+\b light
+\b0  and 
+\b dark
+\b0  because they need no styling.\
+\
+}
