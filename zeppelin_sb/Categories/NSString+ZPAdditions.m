@@ -2,20 +2,19 @@
 #import "Defines.h"
 
 @implementation NSString (Zeppelin)
-+ (NSString*)zp_etchedName {
++ (NSString *)zp_etchedName {
 	NSString *name = kEtchedImageName;
 	if (IS_RETINA())
 		name = [name stringByAppendingString:@"@2x"];
 	return [name stringByAppendingPathExtension:@"png"];
 }
-+ (NSString*)zp_blackName {
++ (NSString *)zp_blackName {
 	NSString *name = kBlackImageName;
 	if (IS_RETINA())
 		name = [name stringByAppendingString:@"@2x"];
-
 	return [name stringByAppendingPathExtension:@"png"];
 }
-+ (NSString*)zp_silverName {
++ (NSString *)zp_silverName {
 	NSString *name = kSilverImageName;
 	if (IS_RETINA())
 		name = [name stringByAppendingString:@"@2x"];

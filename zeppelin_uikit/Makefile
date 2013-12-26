@@ -7,6 +7,6 @@ TWEAK_NAME = zeppelin_uikit
 zeppelin_uikit_ARCHS = armv7 arm64
 zeppelin_uikit_FILES = Tweak.xm
 zeppelin_uikit_CFLAGS = -I../include
-zeppelin_uikit_FRAMEWORKS = UIKit
+zeppelin_uikit_FRAMEWORKS = UIKit CoreGraphics
 
 include $(THEOS_MAKE_PATH)/tweak.mk

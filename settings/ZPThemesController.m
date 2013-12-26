@@ -99,7 +99,7 @@
 	return self.themes;
 }
 
--(void)setEditing:(BOOL)editing animated:(BOOL)animated {	
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {	
 	// done editing. save the changes into settings	
 	if (!editing) {
 		NSArray* selectedRows = [_tableView indexPathsForSelectedRows];

@@ -19,8 +19,8 @@
 #define kZeppelinSettingsChanged         @"com.alexzielenski.zeppelin/settingsChanged"
 #define kZeppelinSettingsRefreshSettings @"com.alexzielenski.zeppelin/refreshSettings"
 
-#define kBlackImageName      IS_IOS_70_OR_LATER() ? @"light" : @"black"
-#define kSilverImageName     IS_IOS_70_OR_LATER() ? @"dark" : @"silver"
+#define kBlackImageName      IS_IOS_70_OR_LATER() ? @"logo" : @"black"
+#define kSilverImageName     IS_IOS_70_OR_LATER() ? @"logo" : @"silver"
 #define kEtchedImageName     @"etched"
 
 #define kThemesDirectory     @"/Library/Zeppelin"

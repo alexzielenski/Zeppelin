@@ -21,7 +21,7 @@
 }
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)spec {
-    NSString *key([spec propertyForKey:@"key"]);
+    NSString *key = [spec propertyForKey:@"key"];
     if ([[spec propertyForKey:@"negate"] boolValue])
         value = [NSNumber numberWithBool:(![value boolValue])];
     [_settings setValue:value forKey:key];
@@ -58,6 +58,9 @@
 }
 
 - (void)setCurrentTheme:(ZPTheme *)theme {
+	if ([theme.name isEqualToString: [_settings objectForKey: PrefsThemeKey]])
+		return;
+	
 	[_settings setObject:theme.name forKey:PrefsThemeKey];
 	[_settings setObject:theme.pack forKey:PrefsPackKey];
 

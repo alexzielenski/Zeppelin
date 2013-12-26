@@ -48,8 +48,7 @@
 			blackName = [blackName stringByAppendingString:@".png"];
 			self.whiteImage = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:blackName]];
 		}
-		
-			
+				
 		// no images? kill myself
 		if (!self.whiteImage || !self.image) {
 			[self release];

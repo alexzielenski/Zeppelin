@@ -58,7 +58,7 @@
 	return enabled;
 }
 
-- (NSString*)currentSilverName {
+- (NSString *)currentSilverName {
 	NSString *name = nil;
 	if (!(name = [settings objectForKey:PrefsAltSilverKey]))
 		name = [NSString zp_silverName];
@@ -67,7 +67,7 @@
 	return name;
 }
 
-- (NSString*)currentBlackName {
+- (NSString *)currentBlackName {
 	NSString *name = nil;
 	if (!(name = [settings objectForKey:PrefsAltBlackKey]))
 		name = [NSString zp_blackName];
@@ -76,7 +76,7 @@
 	return name;
 }
 
-- (NSString*)currentEtchedName {
+- (NSString *)currentEtchedName {
 	NSString *name = nil;
 	if (!(name = [settings objectForKey:PrefsAltEtchedKey]))
 		name = [NSString zp_etchedName];
