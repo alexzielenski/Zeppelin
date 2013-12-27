@@ -44,8 +44,6 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 %new(v@:)
 - (void)forceUpdate {
 	[self _updateServiceItem];
-	// [self _postItem: 4 withState: 9];
-
 	[self _notifyItemChanged: 4];
 }
 
@@ -70,7 +68,6 @@ static void setSettingsNotification(CFNotificationCenterRef center,
     if (server.shouldTint) {
         black  =  @"tint";
         silver = server.currentLogoName;
-        NSLog(@"Zeppelin rules");
     } else {
         black = [server currentBlackName];
         silver = [server currentSilverName];
