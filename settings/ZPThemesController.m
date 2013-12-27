@@ -89,8 +89,7 @@
 		self.navigationItem.rightBarButtonItem = [self editButtonItem];
 }
 
-- (NSArray *)currentThemes
-{	
+- (NSArray *)currentThemes {
 	if (!_tableView.isEditing) {
 	
 		return [self.themes filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"hidden == NO"]];

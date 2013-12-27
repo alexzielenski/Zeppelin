@@ -21,32 +21,26 @@
 	if ((self = [super init])) {
 		self.name = [[path lastPathComponent] stringByDeletingPathExtension];
 		// Find out which image to use
-		BOOL retina = ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale] == 2);
-		NSString *silverName = nil;
-		if (!retina)
-			silverName = kSilverImageName;
-		if (retina)
-			silverName = [kSilverImageName stringByAppendingString:@"@2x"];
-			
-		silverName = [silverName stringByAppendingString:@".png"];
-		self.image = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:silverName]];
-		
-		NSString *blackName = nil;
-		if (!retina)
-			blackName = kBlackImageName;
-		if (retina)
-			blackName = [kBlackImageName stringByAppendingString:@"@2x"];
+		NSString *silverName;
+		if (IS_IOS_70_OR_LATER()) {
+			silverName = RETINIZE(kLogoImageName);
+			self.image = self.whiteImage = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:silverName]];
+		}
 
-		blackName = [blackName stringByAppendingString:@".png"];
-		self.whiteImage = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:blackName]];
-		
-		if (!whiteImage) {
-			if (!retina)
-				blackName = kEtchedImageName;
-			if (retina)
-				blackName = [kEtchedImageName stringByAppendingString:@"@2x"];
-			blackName = [blackName stringByAppendingString:@".png"];
+		if (!self.image) {
+			silverName = RETINIZE(kSilverImageName);
+			self.image = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:silverName]];
+		}
+
+		NSString *blackName;
+		if (!self.whiteImage) {
+			blackName = RETINIZE(kBlackImageName);
 			self.whiteImage = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:blackName]];
+
+			if (!self.whiteImage) {
+				blackName = RETINIZE(kEtchedImageName);
+				self.whiteImage = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:blackName]];
+			}
 		}
 				
 		// no images? kill myself

@@ -2,15 +2,16 @@
 #import "Categories/NSString+ZPAdditions.h"
 
 @implementation ZPImageServer
-+ (ZPImageServer*)sharedServer {
++ (ZPImageServer *)sharedServer {
 	static ZPImageServer *server = nil;
 	if (!server) {
 		server = [[ZPImageServer alloc] init];
 	}
 	return server;
 }
+
 - (id)init {
-	if ((self=[super init])) {
+	if ((self = [super init])) {
 		// get the settings
 		[self setSettings:[NSDictionary dictionaryWithContentsOfFile:PREFS_PATH]];
 	}
@@ -36,13 +37,13 @@
 	enabled        = ([settings.allKeys containsObject:PrefsEnabledKey]) ? [[settings objectForKey:PrefsEnabledKey] boolValue] : NO;
 	directory      = [[kThemesDirectory stringByAppendingPathComponent:name] retain];
 	noLogo         = [[settings objectForKey:PrefsThemeKey] isEqualToString:@"None"];
-
+	shouldTint     = ([[NSFileManager defaultManager] fileExistsAtPath: self.currentLogoPath]);
 	// if ([settings.allKeys containsObject: PrefsPackKey])
 		// pack       = [[settings objectForKey: PrefsPackKey] retain];
 
 }
 
-- (NSDictionary*)settings {
+- (NSDictionary *)settings {
 	return settings;
 }
 
@@ -52,6 +53,10 @@
 
 - (BOOL)noLogo {
 	return noLogo;
+}
+
+- (BOOL)shouldTint {
+	return shouldTint;
 }
 
 - (BOOL)enabled {
@@ -87,19 +92,34 @@
 	return name;
 }
 
-- (NSString*)currentSilverPath {
+- (NSString *)currentLogoName {
+	NSString *name = nil;
+	if (!(name = [settings objectForKey:PrefsAltLogoKey]))
+		name = [NSString zp_logoName];
+
+	// append extension if none
+	if (![name.pathExtension isEqualToString:@"png"])
+		name = [name stringByAppendingPathExtension:@"png"];
+	return name;
+}
+
+- (NSString *)currentSilverPath {
 	return [[self currentThemeDirectory] stringByAppendingPathComponent:[self currentSilverName]];
 }
 
-- (NSString*)currentBlackPath {
+- (NSString *)currentBlackPath {
 	return [[self currentThemeDirectory] stringByAppendingPathComponent:[self currentBlackName]];
 }
 
-- (NSString*)currentEtchedPath {
+- (NSString *)currentEtchedPath {
 	return [[self currentThemeDirectory] stringByAppendingPathComponent:[self currentEtchedName]];
 }
 
-- (NSString*)currentThemeDirectory {
+- (NSString *)currentLogoPath {
+	return [[self currentThemeDirectory] stringByAppendingPathComponent:[self currentLogoName]];
+}
+
+- (NSString *)currentThemeDirectory {
 	// if (pack)
 		// return [directory stringByAppendingPathComponent: pack];
 	return directory;

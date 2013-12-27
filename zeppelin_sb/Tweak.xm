@@ -65,11 +65,18 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 		return;
 	}
 
-	NSString *black  = [server currentBlackName];
-	NSString *silver = [server currentSilverName];
+	NSString *black; 
+	NSString *silver;
+    if (server.shouldTint) {
+        black  =  @"tint";
+        silver = server.currentLogoName;
+        NSLog(@"Zeppelin rules");
+    } else {
+        black = [server currentBlackName];
+        silver = [server currentSilverName];
+    }
 
 	NSString *dir = [server currentThemeDirectory];
-
 
 	strncpy(data->serviceImages[0], [silver cStringUsingEncoding:NSUTF8StringEncoding], 100);
 	strncpy(data->serviceImages[1], [black cStringUsingEncoding:NSUTF8StringEncoding], 100);

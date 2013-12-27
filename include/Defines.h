@@ -9,19 +9,22 @@
 #define PrefsAltSilverKey    @"altSilver" // would be silver-alt1@2x.png
 #define PrefsAltBlackKey     @"altBlack"
 #define PrefsAltEtchedKey    @"altEtched"
+#define PrefsAltLogoKey      @"altLogo"
 #define PrefsPackKey         @"pack"
 #define PrefsHiddenKey       @"hiddenThemes"
 
 #define IN_SPRINGBOARD()     ([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.apple.springboard"])
 #define IS_RETINA()          ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale] == 2)
 #define PREFS_PATH           [NSString stringWithFormat:@"%@/Library/Preferences/com.alexzielenski.zeppelin.plist", NSHomeDirectory()]
+#define RETINIZE(r)          [(IS_RETINA()) ? [r stringByAppendingString:@"@2x"] : r stringByAppendingPathExtension: @"png"]
 
 #define kZeppelinSettingsChanged         @"com.alexzielenski.zeppelin/settingsChanged"
 #define kZeppelinSettingsRefreshSettings @"com.alexzielenski.zeppelin/refreshSettings"
 
-#define kBlackImageName      IS_IOS_70_OR_LATER() ? @"logo" : @"black"
-#define kSilverImageName     IS_IOS_70_OR_LATER() ? @"logo" : @"silver"
+#define kBlackImageName      @"black"
+#define kSilverImageName     @"silver"
 #define kEtchedImageName     @"etched"
+#define kLogoImageName       @"logo"
 
 #define kThemesDirectory     @"/Library/Zeppelin"
 #define kPacksDirectory      @"/Library/Zeppelin/Packs"

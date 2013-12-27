@@ -30,15 +30,11 @@
                 // Construct new image the same size as this one.
                 UIImage *image;
                 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
                 if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
                         UIGraphicsBeginImageContextWithOptions([self size], NO, 0.f); // 0.f for scale means "scale for device's main screen".
                 } else {
                         UIGraphicsBeginImageContext([self size]);
                 }
-#else
-                UIGraphicsBeginImageContext([self size]);
-#endif
                 CGRect rect = CGRectZero;
                 rect.size = [self size];
                 
@@ -69,6 +65,7 @@
 @interface UIStatusBarServiceItemView ()
 - (UIImage *)zp_imageNamed:(NSString *)name;
 - (void)zp_cacheImage:(UIImage *)image named:(NSString *)name;
+- (BOOL)shouldTint;
 @end
 
 %hook UIStatusBarServiceItemView
@@ -96,37 +93,63 @@ static char kIMAGECACHE;
 
 	if (!operatorDirectory.length) {
 		return %orig;
-
 	}
 
 	UIStatusBarForegroundStyleAttributes *attributes = [(UIStatusBarServiceItemView *)self valueForKey: @"foregroundStyle"];
 	UIColor *tint = [attributes tintColor];
 
 	NSString *blackImage = objc_getAssociatedObject(self, &kBLACKIMAGE);
+	NSString *whiteImage = objc_getAssociatedObject(self, &kWHITEIMAGE);
 
-	UIImage *image;
-	if (!(image = [self zp_imageNamed: operatorDirectory.lastPathComponent])) {
-		image = [UIImage imageWithContentsOfFile: [operatorDirectory stringByAppendingPathComponent: blackImage]];
-		[self zp_cacheImage: image named: operatorDirectory.lastPathComponent];
-		NSLog(@"Zeppelin: nocache");
+	UIImage *image = nil;
+	if (self.shouldTint) {
+		NSString *cacheName = [operatorDirectory.lastPathComponent stringByAppendingPathComponent: blackImage];
+
+		if (!(image = [self zp_imageNamed: cacheName])) {
+			NSString *blackImage = objc_getAssociatedObject(self, &kBLACKIMAGE);
+			image = [UIImage imageWithContentsOfFile: [operatorDirectory stringByAppendingPathComponent: blackImage]];
+			[self zp_cacheImage: image named: cacheName];
+		}
+
+		image = [image imageTintedWithColor: tint];
 	} else {
-		NSLog(@"Zeppelin: cache");
+		CGFloat whiteComponent = 0.0;
+		[tint getWhite:&whiteComponent alpha: NULL];
+
+		NSString *cacheName = [operatorDirectory.lastPathComponent stringByAppendingPathComponent: whiteComponent < 0.5 ? blackImage : whiteImage];
+
+		if (!(image = [self zp_imageNamed: cacheName])) {
+			image = [UIImage imageWithContentsOfFile: [operatorDirectory stringByAppendingPathComponent: whiteComponent < 0.5 ? blackImage : whiteImage]];
+			[self zp_cacheImage: image named: cacheName];
+		}
 	}
 
-	return [_UILegibilityImageSet imageFromImage: [image imageTintedWithColor: tint]
-								 withShadowImage: [[[UIImage alloc] init] autorelease]];
+	return [_UILegibilityImageSet imageFromImage: image
+								 withShadowImage: nil];
 }
 
 - (CGFloat)extraLeftPadding {
-	return 3.0;
+	if (self.shouldTint)
+		return 3.0;
+	return %orig;
 }
 
 - (CGFloat)extraRightPadding {
-	return 3.0;
+	if (self.shouldTint)
+		return 3.0;
+	return %orig;
 }
 
 - (CGFloat)standardPadding {
-	return 0.0;
+	if (self.shouldTint)
+		return 0.0;
+	return %orig;
+}
+
+%new
+- (BOOL)shouldTint {
+	NSString *whiteImage = objc_getAssociatedObject(self, &kWHITEIMAGE);
+	return ([whiteImage isEqualToString: @"tint"]);
 }
 
 %new
@@ -145,7 +168,8 @@ static char kIMAGECACHE;
 		objc_setAssociatedObject(self, &kIMAGECACHE, cache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 	}
 
-	[cache setObject: image forKey: name];
+	if (image)
+		[cache setObject: image forKey: name];
 }
 
 %end
