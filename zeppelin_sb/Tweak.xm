@@ -90,7 +90,7 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 -(BOOL)_setItem:(int)item enabled:(BOOL)enabled {
     ZPImageServer *server = [ZPImageServer sharedServer];
         
-    if (item == 4 && [server noLogo] && [server enabled] && enabled) {
+    if (item == 4 && [server noLogo] && server.isEnabled && enabled) {
             NSLog(@"Zeppelin: Disabling Item: %i", item);
             return %orig(item, NO);
     }
@@ -107,7 +107,7 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 - (void)setStatusBarItem:(int)item enabled:(BOOL)enabled {
         ZPImageServer *server = [ZPImageServer sharedServer];
         
-        if (item == 4 && [server noLogo] && [server enabled]) {
+        if (item == 4 && [server noLogo] && server.isEnabled) {
             NSLog(@"Zeppelin: Disabling Item: %i", item);
             %orig(item, NO);
             return;
@@ -130,7 +130,7 @@ static void setSettingsNotification(CFNotificationCenterRef center,
         NSLog(@"Zeppelin: update service item");
         
         ZPImageServer *server = [ZPImageServer sharedServer];
-        if (!server.enabled || server.useOldMethod) {
+        if (!server.enabled || server.shouldUseOldMethod) {
                 NSLog(@"Zeppelin: Disabled");
                 return;
         }
@@ -235,7 +235,7 @@ static void setSettingsNotification(CFNotificationCenterRef center,
         if (IS_IOS_60()) {
         
                 ZPImageServer *server = [ZPImageServer sharedServer];
-                BOOL enabled = [server enabled];
+                BOOL enabled = server.isEnabled;
         
                 if (!enabled) {
                         return %orig(names, directory, anOperator, carrierName);
@@ -251,7 +251,7 @@ static void setSettingsNotification(CFNotificationCenterRef center,
                 
         } else {
                 ZPImageServer *server = [ZPImageServer sharedServer];
-                BOOL enabled = [server enabled];
+                BOOL enabled = server.isEnabled;
                 
                 if (!enabled) {
                         return %orig(names, directory, anOperator, carrierName);
@@ -278,7 +278,7 @@ static void setSettingsNotification(CFNotificationCenterRef center,
         NSLog(@"Zeppelin: Getting images for operator: %@", anOperator);
         ZPImageServer *server = [ZPImageServer sharedServer];
 
-        BOOL enabled = [server enabled];
+        BOOL enabled = server.isEnabled;
         if (!enabled) {
                 return %orig(blackImageName, silverImageName, directory, anOperator, carrierName);
         }
@@ -296,7 +296,7 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 - (void)_getBlackImageName:(NSString **)blackImageName silverImageName:(NSString **)silverImageName directory:(NSString **)directory forFakeCarrier:(NSString *)fakeCarrier {
         ZPImageServer *server = [ZPImageServer sharedServer];
 
-        BOOL enabled = [server enabled];
+        BOOL enabled = server.isEnabled;
         if (!enabled) {
                 %orig(blackImageName, silverImageName, directory, fakeCarrier);
                 return;

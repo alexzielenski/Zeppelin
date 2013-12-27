@@ -1,19 +1,14 @@
 #import "Defines.h"
 
-@interface ZPImageServer : NSObject {
-	BOOL enabled;
-	BOOL noLogo;
-	BOOL shouldTint;
-	NSString *directory;
-	NSString *pack;
-	NSDictionary *settings;
-}
-+ (ZPImageServer*)sharedServer;
-- (BOOL)enabled;
-- (BOOL)useOldMethod;
-- (BOOL)noLogo;
-- (BOOL)shouldTint;
+@interface ZPImageServer : NSObject 
+@property (assign, nonatomic, getter=isEnabled) BOOL enabled;
+@property (assign, nonatomic) BOOL noLogo;
+@property (assign, nonatomic) BOOL shouldTint;
+@property (assign, nonatomic) BOOL shouldUseOldMethod;
+@property (copy, nonatomic) NSString *themeName;
+@property (copy, nonatomic) NSString *packName;
 
++ (ZPImageServer*)sharedServer;
 - (NSString *)currentSilverName;
 - (NSString *)currentBlackName;
 - (NSString *)currentEtchedName;

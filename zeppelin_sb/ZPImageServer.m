@@ -1,7 +1,13 @@
 #import "ZPImageServer.h"
 #import "Categories/NSString+ZPAdditions.h"
 
+@interface ZPImageServer ()
+@property (retain, nonatomic) NSDictionary *_settings;
+@end
+
 @implementation ZPImageServer
+@synthesize enabled, noLogo, shouldTint, themeName, packName, _settings, shouldUseOldMethod;
+
 + (ZPImageServer *)sharedServer {
 	static ZPImageServer *server = nil;
 	if (!server) {
@@ -13,60 +19,36 @@
 - (id)init {
 	if ((self = [super init])) {
 		// get the settings
-		[self setSettings:[NSDictionary dictionaryWithContentsOfFile:PREFS_PATH]];
+		self.settings = [NSDictionary dictionaryWithContentsOfFile:PREFS_PATH];
 	}
 	return self;
 }
 
-- (void)setSettings:(NSDictionary*)newSettings {
-	if (settings) {
-		[settings release];
-		[directory release];
-	}
+- (void)setSettings:(NSDictionary *)newSettings {
+	self._settings = newSettings;
 
-	// if (pack)
-		// [pack release], pack = nil;
-
-	settings = [newSettings retain];
-
-	if (!settings) {
+	if (!self._settings) {
 		NSLog(@"Zeppelin: No settings found. Reverting to defaults.");
-		settings = [DefaultPrefs retain];
+		self._settings = DefaultPrefs;
 	}
-	NSString *name = [settings objectForKey:PrefsThemeKey];
-	enabled        = ([settings.allKeys containsObject:PrefsEnabledKey]) ? [[settings objectForKey:PrefsEnabledKey] boolValue] : NO;
-	directory      = [[kThemesDirectory stringByAppendingPathComponent:name] retain];
-	noLogo         = [[settings objectForKey:PrefsThemeKey] isEqualToString:@"None"];
-	shouldTint     = ([[NSFileManager defaultManager] fileExistsAtPath: self.currentLogoPath]);
-	// if ([settings.allKeys containsObject: PrefsPackKey])
-		// pack       = [[settings objectForKey: PrefsPackKey] retain];
+	self.themeName  = [self._settings objectForKey:PrefsThemeKey];
+	self.enabled    = [[self._settings objectForKey:PrefsEnabledKey] boolValue];
+	self.noLogo     = [[self._settings objectForKey:PrefsThemeKey] isEqualToString:@"None"];
+	self.shouldTint = ([[NSFileManager defaultManager] fileExistsAtPath: self.currentLogoPath]);
+	self.shouldUseOldMethod = [[self._settings objectForKey:PrefsOldMethodKey] boolValue];
+	// self.packName       = [self._settings objectForKey: PrefsPackKey];
 
 }
 
 - (NSDictionary *)settings {
-	return settings;
-}
-
-- (BOOL)useOldMethod {
-	return [[settings objectForKey:PrefsOldMethodKey] boolValue];
-}
-
-- (BOOL)noLogo {
-	return noLogo;
-}
-
-- (BOOL)shouldTint {
-	return shouldTint;
-}
-
-- (BOOL)enabled {
-	return enabled;
+	return self._settings;
 }
 
 - (NSString *)currentSilverName {
 	NSString *name = nil;
-	if (!(name = [settings objectForKey:PrefsAltSilverKey]))
+	if (!(name = [self.settings objectForKey:PrefsAltSilverKey]))
 		name = [NSString zp_silverName];
+
 	if (![name.pathExtension isEqualToString:@"png"])
 		name = [name stringByAppendingPathExtension:@"png"];
 	return name;
@@ -74,8 +56,9 @@
 
 - (NSString *)currentBlackName {
 	NSString *name = nil;
-	if (!(name = [settings objectForKey:PrefsAltBlackKey]))
+	if (!(name = [self.settings objectForKey:PrefsAltBlackKey]))
 		name = [NSString zp_blackName];
+
 	if (![name.pathExtension isEqualToString:@"png"])
 		name = [name stringByAppendingPathExtension:@"png"];
 	return name;
@@ -83,7 +66,7 @@
 
 - (NSString *)currentEtchedName {
 	NSString *name = nil;
-	if (!(name = [settings objectForKey:PrefsAltEtchedKey]))
+	if (!(name = [self.settings objectForKey:PrefsAltEtchedKey]))
 		name = [NSString zp_etchedName];
 
 	// append extension if none
@@ -94,7 +77,7 @@
 
 - (NSString *)currentLogoName {
 	NSString *name = nil;
-	if (!(name = [settings objectForKey:PrefsAltLogoKey]))
+	if (!(name = [self.settings objectForKey:PrefsAltLogoKey]))
 		name = [NSString zp_logoName];
 
 	// append extension if none
@@ -104,31 +87,33 @@
 }
 
 - (NSString *)currentSilverPath {
-	return [[self currentThemeDirectory] stringByAppendingPathComponent:[self currentSilverName]];
+	return [self.currentThemeDirectory stringByAppendingPathComponent:self.currentSilverName];
 }
 
 - (NSString *)currentBlackPath {
-	return [[self currentThemeDirectory] stringByAppendingPathComponent:[self currentBlackName]];
+	return [self.currentThemeDirectory stringByAppendingPathComponent:self.currentBlackName];
 }
 
 - (NSString *)currentEtchedPath {
-	return [[self currentThemeDirectory] stringByAppendingPathComponent:[self currentEtchedName]];
+	return [self.currentThemeDirectory stringByAppendingPathComponent:self.currentEtchedName];
 }
 
 - (NSString *)currentLogoPath {
-	return [[self currentThemeDirectory] stringByAppendingPathComponent:[self currentLogoName]];
+	return [self.currentThemeDirectory stringByAppendingPathComponent:self.currentLogoName];
 }
 
 - (NSString *)currentThemeDirectory {
-	// if (pack)
-		// return [directory stringByAppendingPathComponent: pack];
+	NSString *directory = [kThemesDirectory stringByAppendingPathComponent: self.themeName];
+	// if (self.packName)
+		// return [directory stringByAppendingPathComponent: self.packName];
 	return directory;
 }
 
 - (void)dealloc {
-	[directory release];
-	[settings release];
-	// [pack release];
+	self._settings = nil;
+	self.themeName = nil;
+	self.packName  = nil;
+
 	[super dealloc];
 }
 
