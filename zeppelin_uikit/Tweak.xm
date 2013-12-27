@@ -131,13 +131,13 @@ static char kIMAGECACHE;
 
 - (CGFloat)extraLeftPadding {
 	if (self.shouldTint && self.isEnabled)
-		return 3.0;
+		return 2.0;
 	return %orig;
 }
 
 - (CGFloat)extraRightPadding {
 	if (self.shouldTint && self.isEnabled)
-		return 3.0;
+		return 4.0;
 	return %orig;
 }
 
