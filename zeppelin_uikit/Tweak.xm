@@ -66,6 +66,7 @@
 - (UIImage *)zp_imageNamed:(NSString *)name;
 - (void)zp_cacheImage:(UIImage *)image named:(NSString *)name;
 - (BOOL)shouldTint;
+- (BOOL)isEnabled;
 @end
 
 %hook UIStatusBarServiceItemView
@@ -91,7 +92,7 @@ static char kIMAGECACHE;
 - (id)_serviceContentsImage {	
 	NSString *operatorDirectory = objc_getAssociatedObject(self, &kOPERATORDIRECTORY);
 
-	if (!operatorDirectory.length) {
+	if (!self.isEnabled) {
 		return %orig;
 	}
 
@@ -129,19 +130,19 @@ static char kIMAGECACHE;
 }
 
 - (CGFloat)extraLeftPadding {
-	if (self.shouldTint)
+	if (self.shouldTint && self.isEnabled)
 		return 3.0;
 	return %orig;
 }
 
 - (CGFloat)extraRightPadding {
-	if (self.shouldTint)
+	if (self.shouldTint && self.isEnabled)
 		return 3.0;
 	return %orig;
 }
 
 - (CGFloat)standardPadding {
-	if (self.shouldTint)
+	if (self.shouldTint && self.isEnabled)
 		return 0.0;
 	return %orig;
 }
@@ -150,6 +151,12 @@ static char kIMAGECACHE;
 - (BOOL)shouldTint {
 	NSString *whiteImage = objc_getAssociatedObject(self, &kWHITEIMAGE);
 	return ([whiteImage isEqualToString: @"tint"]);
+}
+
+%new
+- (BOOL)isEnabled {
+	NSString *operatorDirectory = objc_getAssociatedObject(self, &kOPERATORDIRECTORY);
+	return (operatorDirectory.length);
 }
 
 %new
