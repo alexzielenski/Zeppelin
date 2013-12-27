@@ -3,7 +3,7 @@ include theos/makefiles/common.mk
 BUNDLE_NAME = ZeppelinSettings
 ZeppelinSettings_FILES = ZeppelinSettings.mm ZPAlignedTableViewCell.m ZPThemesController.m ZPTheme.m
 ZeppelinSettings_INSTALL_PATH = /Library/PreferenceBundles
-ZeppelinSettings_FRAMEWORKS = UIKit 
+ZeppelinSettings_FRAMEWORKS = UIKit CoreTelephony
 ZeppelinSettings_PRIVATE_FRAMEWORKS = Preferences
 ZeppelinSettings_CFLAGS = -I../include
 

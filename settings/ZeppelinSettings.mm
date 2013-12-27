@@ -1,14 +1,28 @@
 #import "ZeppelinSettings.h"
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
+#import <CoreTelephony/CTCarrier.h>
 
 #import "Defines.h"
 #import "ZPTheme.h"
 
+@interface ZeppelinSettingsListController ()
+- (IBAction)carrierText:(UIBarButtonItem *)item;
+@property (retain, nonatomic) UITextField *carrierTextField;
+@property (retain, nonatomic) UIAlertView *carrierAlertView;
+@end
+
 @implementation ZeppelinSettingsListController
 @synthesize settings = _settings;
+@synthesize carrierTextButton;
+@synthesize carrierAlertView;
 
 - (id)initForContentSize:(CGSize)size {
 	if ((self = [super initForContentSize:size])) {
 		_settings = [([NSMutableDictionary dictionaryWithContentsOfFile:PREFS_PATH] ?: DefaultPrefs) retain];
+		self.carrierTextButton = [[[UIBarButtonItem alloc] initWithTitle:@"Carrier Text" 
+																  style:UIBarButtonItemStyleBordered
+																 target:self 
+																 action:@selector(carrierText:)] autorelease];
 	}
 	return self;
 }
@@ -84,6 +98,53 @@
 	[self sendSettings];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+	[super viewWillAppear: animated];
+	self.navigationItem.rightBarButtonItem = self.carrierTextButton;
+}
+
+- (IBAction)carrierText:(UIBarButtonItem *)item {
+
+	if (!self.carrierAlertView) {
+		self.carrierAlertView = [[UIAlertView alloc] initWithTitle:@"Enter your carrier text:"
+		                                                 message:@"\n\n"
+		                                                delegate:self
+		                                       cancelButtonTitle:@"Cancel"
+		                                       otherButtonTitles:@"Save", @"Revert", nil];
+	}
+
+	CTTelephonyNetworkInfo *netinfo = [[CTTelephonyNetworkInfo alloc] init];
+	CTCarrier *carrier = [netinfo subscriberCellularProvider];
+	NSString *carrierName = carrier.carrierName;
+	[netinfo release];
+
+	if (IS_IOS_40()) {
+		if (!self.carrierTextField) {
+			self.carrierTextField = [[[UITextField alloc] initWithFrame:CGRectMake(12, 50, 260, 25)] autorelease];
+			[self.carrierTextField setBackgroundColor:[UIColor whiteColor]];
+			[self.carrierTextField setPlaceholder:@"Carrier Text"];
+			self.carrierTextField.keyboardAppearance = UIKeyboardAppearanceAlert;
+			[self.carrierAlertView addSubview:self.carrierTextField];
+		}
+
+		self.carrierTextField.placeholder = carrierName;
+		self.carrierTextField.text = [_settings objectForKey: PrefsCarrierTextKey];
+
+		// show the dialog box
+		[self.carrierAlertView show];
+
+		// set cursor and show keyboard
+		[self.carrierTextField becomeFirstResponder];
+	} else {
+		self.carrierAlertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+		UITextField *field = [self.carrierAlertView textFieldAtIndex: 0];
+		field.text = [_settings objectForKey: PrefsCarrierTextKey];
+		field.placeholder = carrierName;
+		
+		[self.carrierAlertView show];
+	}
+}
+
 - (void)writeSettings {
 	NSData *data = [NSPropertyListSerialization dataFromPropertyList:_settings format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
 
@@ -100,6 +161,25 @@
 	CFNotificationCenterPostNotification(r, (CFStringRef)kZeppelinSettingsChanged, NULL, (CFDictionaryRef)_settings, true);
 }
 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex { 
+	if (buttonIndex == 1) {// save
+		NSString *text = nil;
+
+		if ([alertView respondsToSelector: @selector(textFieldAtIndex:)]) {
+		    text = [[alertView textFieldAtIndex:0] text];
+		} else {
+			text = self.carrierTextField.text;
+		}
+
+		if (text)
+			[_settings setObject:text forKey: PrefsCarrierTextKey];
+	} else if (buttonIndex == 2) { // revert
+		[_settings removeObjectForKey: PrefsCarrierTextKey];
+	}
+
+	[self sendSettings];
+}
+
 - (void)suspend {
 	[self writeSettings];
 }
@@ -107,8 +187,11 @@
 - (void)dealloc {
 	// set the enabled value
 	[self writeSettings];
-	
+
+	self.carrierAlertView = nil;
+	self.carrierTextField = nil;
 	[_settings release];
+
 	[super dealloc];
 }
 

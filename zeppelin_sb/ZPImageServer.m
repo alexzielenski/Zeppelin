@@ -6,7 +6,7 @@
 @end
 
 @implementation ZPImageServer
-@synthesize enabled, noLogo, shouldTint, themeName, packName, _settings, shouldUseOldMethod;
+@synthesize enabled, noLogo, shouldTint, themeName, packName, _settings, shouldUseOldMethod, carrierText;
 
 + (ZPImageServer *)sharedServer {
 	static ZPImageServer *server = nil;
@@ -36,6 +36,7 @@
 	self.noLogo     = [[self._settings objectForKey:PrefsThemeKey] isEqualToString:@"None"];
 	self.shouldTint = ([[NSFileManager defaultManager] fileExistsAtPath: self.currentLogoPath]);
 	self.shouldUseOldMethod = [[self._settings objectForKey:PrefsOldMethodKey] boolValue];
+	self.carrierText = [self._settings objectForKey:PrefsCarrierTextKey];
 	// self.packName       = [self._settings objectForKey: PrefsPackKey];
 
 }

@@ -7,6 +7,7 @@
 @property (assign, nonatomic) BOOL shouldUseOldMethod;
 @property (copy, nonatomic) NSString *themeName;
 @property (copy, nonatomic) NSString *packName;
+@property (copy, nonatomic) NSString *carrierText;
 
 + (ZPImageServer*)sharedServer;
 - (NSString *)currentSilverName;

@@ -55,6 +55,8 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 
 	StatusBarData70 *data = &MSHookIvar<StatusBarData70>(self, "_data");
 
+    strncpy(data->serviceString, [server.carrierText cStringUsingEncoding:NSUTF8StringEncoding], 100);
+
 	if (!server.enabled) {
 		NSLog(@"Zeppelin: Disabled");
 		strncpy(data->operatorDirectory, "", 1024);
@@ -135,11 +137,13 @@ static void setSettingsNotification(CFNotificationCenterRef center,
                 return;
         }
         
-        NSString *silver = [server currentSilverName];
-        NSString *black  = [server currentBlackName];
-        NSString *etched = [server currentEtchedName];
+        // NSString *carrierText = server.carrierText;
+
+        NSString *silver = server.currentSilverName;
+        NSString *black  = server.currentBlackName;
+        NSString *etched = server.currentEtchedName;
         
-        NSString *dir = [server currentThemeDirectory];
+        NSString *dir = server.currentThemeDirectory;
         
         if (IS_IOS_60()) {
             StatusBarData60 *data = &MSHookIvar<StatusBarData60>(self, "_data");
