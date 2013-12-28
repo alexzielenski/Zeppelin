@@ -40,6 +40,22 @@
 #define IS_IOS_40()          ([[UIDevice currentDevice] iOSVersionIsAtLeast: @"4.2"] && !IS_IOS_50() && !IS_IOS_60() && !IS_IOS_70_OR_LATER())
 
 typedef struct {
+    int gsmSignalStrengthRaw;
+    int gsmSignalStrengthBars;
+    char serviceString[100];
+    char serviceCrossfadeString[100];
+    unsigned int serviceContentType;
+    int wifiSignalStrengthRaw;
+    int wifiSignalStrengthBars;
+    unsigned int dataNetworkType;
+    int batteryCapacity;
+    unsigned int batteryState;
+    int bluetoothBatteryCapacity;
+    int thermalColor;
+    char operatorDirectory[1024];
+} StatusBarDataCommon;
+
+typedef struct {
     BOOL itemIsEnabled[25];
     BOOL timeString[64];
     int gsmSignalStrengthRaw;

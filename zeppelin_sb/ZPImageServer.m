@@ -36,7 +36,10 @@
 	self.noLogo     = [[self._settings objectForKey:PrefsThemeKey] isEqualToString:@"None"];
 	self.shouldTint = ([[NSFileManager defaultManager] fileExistsAtPath: self.currentLogoPath]);
 	self.shouldUseOldMethod = [[self._settings objectForKey:PrefsOldMethodKey] boolValue];
+
+	NSLog(@"Zeppelin: carrier: %@", [self._settings objectForKey:PrefsCarrierTextKey]);
 	self.carrierText = [self._settings objectForKey:PrefsCarrierTextKey];
+	NSLog(@"Zeppelin: carrier2: %@", self.carrierText);
 	// self.packName       = [self._settings objectForKey: PrefsPackKey];
 
 }

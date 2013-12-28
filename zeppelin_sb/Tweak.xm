@@ -41,6 +41,7 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 %group iOS7
 
 %hook SBStatusBarStateAggregator
+
 %new(v@:)
 - (void)forceUpdate {
 	[self _updateServiceItem];
@@ -55,13 +56,15 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 
 	StatusBarData70 *data = &MSHookIvar<StatusBarData70>(self, "_data");
 
-    strncpy(data->serviceString, [server.carrierText cStringUsingEncoding:NSUTF8StringEncoding], 100);
-
+    if (server.carrierText && server.carrierText.length)
+        strncpy(data->serviceString, [server.carrierText cStringUsingEncoding:NSUTF8StringEncoding], 100);
+    else
+        strncpy(data->serviceString, [(NSString *)self.operatorName cStringUsingEncoding: NSUTF8StringEncoding], 100);
 	if (!server.enabled) {
 		NSLog(@"Zeppelin: Disabled");
 		strncpy(data->operatorDirectory, "", 1024);
-		data->operatorDirectory[0]   = '\0';
-		data->serviceContentType        = 3;
+		data->operatorDirectory[0] = '\0';
+		data->serviceContentType = 3;
 		return;
 	}
 
@@ -132,12 +135,22 @@ static void setSettingsNotification(CFNotificationCenterRef center,
         NSLog(@"Zeppelin: update service item");
         
         ZPImageServer *server = [ZPImageServer sharedServer];
-        if (!server.enabled || server.shouldUseOldMethod) {
-                NSLog(@"Zeppelin: Disabled");
-                return;
+        NSString *carrierText = server.carrierText;
+        if (carrierText && carrierText.length) {
+            StatusBarDataCommon *data = &MSHookIvar<StatusBarDataCommon>(self, "_data");
+            
+            strncpy(data->serviceString, [carrierText cStringUsingEncoding:NSUTF8StringEncoding], 100);
+            data->serviceContentType = 1;
+
+            strncpy(data->operatorDirectory, "", 1024);
+            data->operatorDirectory[1023] = '\0';
         }
-        
-        // NSString *carrierText = server.carrierText;
+
+        if (!server.enabled || server.shouldUseOldMethod) {
+
+            NSLog(@"Zeppelin: Disabled");
+            return;
+        }
 
         NSString *silver = server.currentSilverName;
         NSString *black  = server.currentBlackName;
@@ -152,8 +165,8 @@ static void setSettingsNotification(CFNotificationCenterRef center,
             strncpy(data->serviceImages[1], [etched cStringUsingEncoding:NSUTF8StringEncoding], 100);
             strncpy(data->operatorDirectory, [dir fileSystemRepresentation], 1024);        
 
-            data->serviceCrossfadeString[0] = '\0'; // eliminate the titles
-            data->serviceString[0]          = '\0';
+            // data->serviceCrossfadeString[0] = '\0'; // eliminate the titles
+            // data->serviceString[0]          = '\0';
             data->serviceContentType        = 3;
 
             data->serviceImages[0][99]      = '\0'; // last index should be null
@@ -175,8 +188,8 @@ static void setSettingsNotification(CFNotificationCenterRef center,
             strncpy(data->serviceImages[2], [etched cStringUsingEncoding:NSUTF8StringEncoding], 100);        
             strncpy(data->operatorDirectory, [dir fileSystemRepresentation], 1024);        
                 
-            data->serviceCrossfadeString[0] = '\0'; // eliminate the titles
-            data->serviceString[0]          = '\0';
+            // data->serviceCrossfadeString[0] = '\0'; // eliminate the titles
+            // data->serviceString[0]          = '\0';
             data->serviceContentType        = 3;
                                 
             data->serviceImages[0][99]      = '\0'; // last index should be null
@@ -202,7 +215,7 @@ static void setSettingsNotification(CFNotificationCenterRef center,
                  
             data->serviceImageBlack[99]     = '\0';
             data->serviceImageSilver[99]    = '\0';
-            data->serviceString[0]          = '\0';
+            // data->serviceString[0]          = '\0';
             data->operatorDirectory[1023]   = '\0';
             data->serviceContentType        = 3;
                  
@@ -225,55 +238,42 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 
         NSString *&serviceString = MSHookIvar<NSString *>(self, "_serviceString");
         if (serviceString) {
-                [serviceString release];
-                serviceString = nil;
+            [serviceString release];
+            serviceString = nil;
         }
+
+        serviceString = server.carrierText;
 
         [self _dataChanged];
 }
 
 %group iOS5
 - (BOOL)_getServiceImageNames:(NSString ***)names directory:(NSString **)directory forOperator:(NSString *)anOperator statusBarCarrierName:(NSString **)carrierName {        
-        NSLog(@"Zeppelin: Getting images for operator: %@", anOperator);
+    NSLog(@"Zeppelin: Getting images for operator: %@", anOperator);
+    ZPImageServer *server = [ZPImageServer sharedServer];
+    BOOL enabled = server.isEnabled;
 
-        if (IS_IOS_60()) {
-        
-                ZPImageServer *server = [ZPImageServer sharedServer];
-                BOOL enabled = server.isEnabled;
-        
-                if (!enabled) {
-                        return %orig(names, directory, anOperator, carrierName);
-                }
-                *directory   = [server currentThemeDirectory];
-                *carrierName = anOperator;
-        
-                NSString *black  = [server currentBlackName];
-                NSString *etched = [server currentEtchedName];
+    *directory   = server.currentThemeDirectory;
+    *carrierName = server.carrierText ? server.carrierText : anOperator;
+
+    NSString *silver = server.currentSilverName;
+    NSString *black  = server.currentBlackName;
+    NSString *etched = server.currentEtchedName;
+
+    if (IS_IOS_60() && enabled) {
+        names[0] = (NSString **)black;
+        names[1] = (NSString **)etched;
                 
-                names[0] = (NSString**)black;
-                names[1] = (NSString**)etched;
-                
-        } else {
-                ZPImageServer *server = [ZPImageServer sharedServer];
-                BOOL enabled = server.isEnabled;
-                
-                if (!enabled) {
-                        return %orig(names, directory, anOperator, carrierName);
-                }
-                
-                *directory   = [server currentThemeDirectory];
-                *carrierName = anOperator;
-        
-                NSString *silver = [server currentSilverName];
-                NSString *black  = [server currentBlackName];
-                NSString *etched = [server currentEtchedName];
-                
-                names[0] = (NSString**)silver;
-                names[1] = (NSString**)black;
-                names[2] = (NSString**)etched;
-        }
-        
         return YES;
+    } else if (enabled) {
+        names[0] = (NSString **)silver;
+        names[1] = (NSString **)black;
+        names[2] = (NSString **)etched;
+
+        return YES;
+    }
+        
+    return %orig(names, directory, anOperator, carrierName);
 }
 %end
         
@@ -286,17 +286,19 @@ static void setSettingsNotification(CFNotificationCenterRef center,
         if (!enabled) {
                 return %orig(blackImageName, silverImageName, directory, anOperator, carrierName);
         }
-        *directory   = [server currentThemeDirectory];
-        *carrierName = anOperator;
 
-        NSString *silver = [server currentSilverName];
-        NSString *black  = [server currentBlackName];
+        *directory   = server.currentThemeDirectory;
+        *carrierName = server.carrierText ? server.carrierText : anOperator;
+
+        NSString *silver = server.currentSilverName;
+        NSString *black  = server.currentBlackName;
 
         *silverImageName = silver;
         *blackImageName  = black;
 
         return YES;
 }
+
 - (void)_getBlackImageName:(NSString **)blackImageName silverImageName:(NSString **)silverImageName directory:(NSString **)directory forFakeCarrier:(NSString *)fakeCarrier {
         ZPImageServer *server = [ZPImageServer sharedServer];
 
@@ -305,8 +307,8 @@ static void setSettingsNotification(CFNotificationCenterRef center,
                 %orig(blackImageName, silverImageName, directory, fakeCarrier);
                 return;
         }
-        [self _getBlackImageName:blackImageName silverImageName:silverImageName directory:directory forOperator:fakeCarrier statusBarCarrierName:nil];
 
+        [self _getBlackImageName:blackImageName silverImageName:silverImageName directory:directory forOperator:fakeCarrier statusBarCarrierName:nil];
 }
 %end
 

@@ -140,7 +140,7 @@
 		UITextField *field = [self.carrierAlertView textFieldAtIndex: 0];
 		field.text = [_settings objectForKey: PrefsCarrierTextKey];
 		field.placeholder = carrierName;
-		
+
 		[self.carrierAlertView show];
 	}
 }
@@ -161,7 +161,7 @@
 	CFNotificationCenterPostNotification(r, (CFStringRef)kZeppelinSettingsChanged, NULL, (CFDictionaryRef)_settings, true);
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex { 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(int)buttonIndex { 
 	if (buttonIndex == 1) {// save
 		NSString *text = nil;
 
