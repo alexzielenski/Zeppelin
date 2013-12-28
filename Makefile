@@ -6,7 +6,6 @@ export THEOS_PLATFORM_SDK_ROOT_armv6 = /Applications/Xcode_Legacy.app/Contents/D
 export SDKVERSION_armv6 = 4.2
 export SDKVERSION_arm64 = 7.0
 export TARGET_IPHONEOS_DEPLOYMENT_VERSION = 4.2
-export TARGET_IPHONEOS_DEPLOYMENT_VERSION_arm7s = 6.0
 export TARGET_IPHONEOS_DEPLOYMENT_VERSION_arm64 = 7.0
 export ARCHS = armv6 armv7 arm64
 

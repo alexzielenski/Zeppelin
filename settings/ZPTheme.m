@@ -2,7 +2,7 @@
 #import "Defines.h"
 
 @implementation ZPTheme
-@synthesize name, image, whiteImage, pack, hidden;
+@synthesize name, image, whiteImage, pack, hidden, useDark;
 
 + (ZPTheme*)themeWithPath:(NSString*)path {
 	return [[[ZPTheme alloc] initWithPath:path] autorelease];
@@ -20,11 +20,23 @@
 	
 	if ((self = [super init])) {
 		self.name = [[path lastPathComponent] stringByDeletingPathExtension];
+
 		// Find out which image to use
 		NSString *silverName;
 		if (IS_IOS_70_OR_LATER()) {
 			silverName = RETINIZE(kLogoImageName);
 			self.image = self.whiteImage = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:silverName]];
+
+			// Since I changed the logo format in iOS7 from dark.png and light.png to logo.png
+			// I'm adding support for dark.png to be used as logo.png to avoid many support emails
+			if (!self.image) {
+				silverName = RETINIZE(kDarkImageName);
+				self.image = self.whiteImage = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:silverName]];
+
+				// later on, if useDark is true, the altlogoname pref setting will be used to set it
+				if (self.image)
+					self.useDark = YES;
+			}
 		}
 
 		if (!self.image) {

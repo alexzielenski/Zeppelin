@@ -25,6 +25,7 @@
 #define kSilverImageName     @"silver"
 #define kEtchedImageName     @"etched"
 #define kLogoImageName       @"logo"
+#define kDarkImageName       @"dark"
 
 #define kThemesDirectory     @"/Library/Zeppelin"
 #define kPacksDirectory      @"/Library/Zeppelin/Packs"
