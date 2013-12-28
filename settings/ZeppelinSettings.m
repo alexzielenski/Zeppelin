@@ -12,7 +12,6 @@
 @property (retain, nonatomic) UITextField *carrierTextField;
 @property (retain, nonatomic) UIAlertView *carrierAlertView;
 @property (nonatomic, retain, readwrite) NSMutableDictionary *settings;
-
 @end
 
 @implementation ZeppelinSettingsListController
@@ -122,22 +121,15 @@
 		                                       otherButtonTitles:@"Save", @"Revert", nil];
 	}
 
-	CTTelephonyNetworkInfo *netinfo = [[CTTelephonyNetworkInfo alloc] init];
-	CTCarrier *carrier = [netinfo subscriberCellularProvider];
-	NSString *carrierName = carrier.carrierName;
-	[netinfo release];
-
 	// the prompt api was added in ios 5
 	if (IS_IOS_40()) {
 		if (!self.carrierTextField) {
 			self.carrierTextField = [[[UITextField alloc] initWithFrame:CGRectMake(12, 50, 260, 25)] autorelease];
 			[self.carrierTextField setBackgroundColor:[UIColor whiteColor]];
-			[self.carrierTextField setPlaceholder:@"Carrier Text"];
 			self.carrierTextField.keyboardAppearance = UIKeyboardAppearanceAlert;
 			[self.carrierAlertView addSubview:self.carrierTextField];
 		}
 
-		self.carrierTextField.placeholder = carrierName;
 		self.carrierTextField.text = [_settings objectForKey: PrefsCarrierTextKey];
 
 		// show the dialog box
@@ -149,7 +141,6 @@
 		self.carrierAlertView.alertViewStyle = UIAlertViewStylePlainTextInput;
 		UITextField *field = [self.carrierAlertView textFieldAtIndex: 0];
 		field.text = [_settings objectForKey: PrefsCarrierTextKey];
-		field.placeholder = carrierName;
 
 		[self.carrierAlertView show];
 	}
@@ -160,8 +151,10 @@
 
 	if (!data)
 		return;
-	if (![data writeToFile:PREFS_PATH atomically:NO])
+	if (![data writeToFile:PREFS_PATH atomically:NO]) {
+		NSLog(@"Zeppelin: failed to write preferences. Permissions issue?");
 		return;
+	}
 }
 
 - (void)sendSettings {

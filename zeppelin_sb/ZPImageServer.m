@@ -32,10 +32,10 @@
 		self._settings = DefaultPrefs;
 	}
 
-	self.themeName  = [self._settings objectForKey:PrefsThemeKey];
-	self.enabled    = [[self._settings objectForKey:PrefsEnabledKey] boolValue];
-	self.noLogo     = [[self._settings objectForKey:PrefsThemeKey] isEqualToString:@"None"];
-	self.shouldTint = ([[NSFileManager defaultManager] fileExistsAtPath: self.currentLogoPath]);
+	self.themeName   = [self._settings objectForKey:PrefsThemeKey];
+	self.enabled     = [[self._settings objectForKey:PrefsEnabledKey] boolValue];
+	self.noLogo      = [[self._settings objectForKey:PrefsThemeKey] isEqualToString:@"None"];
+	self.shouldTint  = ([[NSFileManager defaultManager] fileExistsAtPath: self.currentLogoPath]);
 	self.shouldUseOldMethod = [[self._settings objectForKey:PrefsOldMethodKey] boolValue];
 	self.carrierText = [self._settings objectForKey:PrefsCarrierTextKey];
 	// self.packName       = [self._settings objectForKey: PrefsPackKey];
