@@ -31,15 +31,13 @@
 		NSLog(@"Zeppelin: No settings found. Reverting to defaults.");
 		self._settings = DefaultPrefs;
 	}
+
 	self.themeName  = [self._settings objectForKey:PrefsThemeKey];
 	self.enabled    = [[self._settings objectForKey:PrefsEnabledKey] boolValue];
 	self.noLogo     = [[self._settings objectForKey:PrefsThemeKey] isEqualToString:@"None"];
 	self.shouldTint = ([[NSFileManager defaultManager] fileExistsAtPath: self.currentLogoPath]);
 	self.shouldUseOldMethod = [[self._settings objectForKey:PrefsOldMethodKey] boolValue];
-
-	NSLog(@"Zeppelin: carrier: %@", [self._settings objectForKey:PrefsCarrierTextKey]);
 	self.carrierText = [self._settings objectForKey:PrefsCarrierTextKey];
-	NSLog(@"Zeppelin: carrier2: %@", self.carrierText);
 	// self.packName       = [self._settings objectForKey: PrefsPackKey];
 
 }
@@ -50,43 +48,30 @@
 
 - (NSString *)currentSilverName {
 	NSString *name = nil;
-	if (!(name = [self.settings objectForKey:PrefsAltSilverKey]))
+	if (!(name = RETINIZE([self.settings objectForKey:PrefsAltSilverKey])))
 		name = [NSString zp_silverName];
-
-	if (![name.pathExtension isEqualToString:@"png"])
-		name = [name stringByAppendingPathExtension:@"png"];
 	return name;
 }
 
 - (NSString *)currentBlackName {
 	NSString *name = nil;
-	if (!(name = [self.settings objectForKey:PrefsAltBlackKey]))
+	if (!(name = RETINIZE([self.settings objectForKey:PrefsAltBlackKey])))
 		name = [NSString zp_blackName];
-
-	if (![name.pathExtension isEqualToString:@"png"])
-		name = [name stringByAppendingPathExtension:@"png"];
 	return name;
 }
 
 - (NSString *)currentEtchedName {
 	NSString *name = nil;
-	if (!(name = [self.settings objectForKey:PrefsAltEtchedKey]))
+	if (!(name = RETINIZE([self.settings objectForKey:PrefsAltEtchedKey])))
 		name = [NSString zp_etchedName];
-
-	// append extension if none
-	if (![name.pathExtension isEqualToString:@"png"])
 		name = [name stringByAppendingPathExtension:@"png"];
 	return name;
 }
 
 - (NSString *)currentLogoName {
 	NSString *name = nil;
-	if (!(name = [self.settings objectForKey:PrefsAltLogoKey]))
+	if (!(name = RETINIZE([self.settings objectForKey:PrefsAltLogoKey])))
 		name = [NSString zp_logoName];
-
-	// append extension if none
-	if (![name.pathExtension isEqualToString:@"png"])
-		name = [name stringByAppendingPathExtension:@"png"];
 	return name;
 }
 

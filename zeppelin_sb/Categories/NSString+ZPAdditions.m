@@ -4,31 +4,19 @@
 @implementation NSString (Zeppelin)
 
 + (NSString *)zp_etchedName {
-	NSString *name = kEtchedImageName;
-	if (IS_RETINA())
-		name = [name stringByAppendingString:@"@2x"];
-	return [name stringByAppendingPathExtension:@"png"];
+	return RETINIZE(kEtchedImageName);
 }
 
 + (NSString *)zp_blackName {
-	NSString *name = kBlackImageName;
-	if (IS_RETINA())
-		name = [name stringByAppendingString:@"@2x"];
-	return [name stringByAppendingPathExtension:@"png"];
+	return RETINIZE(kBlackImageName);
 }
 
 + (NSString *)zp_silverName {
-	NSString *name = kSilverImageName;
-	if (IS_RETINA())
-		name = [name stringByAppendingString:@"@2x"];
-	return [name stringByAppendingPathExtension:@"png"];
+	return RETINIZE(kSilverImageName);
 }
 
 + (NSString *)zp_logoName {
-	NSString *name = kLogoImageName;
-	if (IS_RETINA())
-		name = [name stringByAppendingString: @"@2x"];
-	return [name stringByAppendingPathExtension: @"png"];
+	return RETINIZE(kLogoImageName);
 }
 
 - (NSString *)zp_convertedCarrierImageName {
@@ -45,6 +33,6 @@
 	else
 		file = kSilverImageName;
 		
-	return file;
+	return RETINIZE(file);
 }
 @end
