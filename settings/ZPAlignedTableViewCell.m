@@ -5,7 +5,7 @@
 - (void) layoutSubviews {
     [super layoutSubviews];
     CGRect cvf = self.contentView.frame;
-	CGFloat width = 60;
+  	CGFloat width = 60;
     self.imageView.frame = CGRectMake(0.0,
                                       0.0,
                                       width,

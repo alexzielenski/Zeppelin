@@ -5,10 +5,14 @@
 #import "Defines.h"
 #import "ZPTheme.h"
 
-@interface ZeppelinSettingsListController ()
+@interface ZeppelinSettingsListController () {
+	NSMutableDictionary *_settings;
+}
 - (IBAction)carrierText:(UIBarButtonItem *)item;
 @property (retain, nonatomic) UITextField *carrierTextField;
 @property (retain, nonatomic) UIAlertView *carrierAlertView;
+@property (nonatomic, retain, readwrite) NSMutableDictionary *settings;
+
 @end
 
 @implementation ZeppelinSettingsListController
@@ -18,7 +22,7 @@
 
 - (id)initForContentSize:(CGSize)size {
 	if ((self = [super initForContentSize:size])) {
-		_settings = [([NSMutableDictionary dictionaryWithContentsOfFile:PREFS_PATH] ?: DefaultPrefs) retain];
+		self.settings = [([NSMutableDictionary dictionaryWithContentsOfFile:PREFS_PATH] ?: DefaultPrefs) retain];
 		self.carrierTextButton = [[[UIBarButtonItem alloc] initWithTitle:@"Carrier Text" 
 																  style:UIBarButtonItemStyleBordered
 																 target:self 
@@ -28,7 +32,7 @@
 }
 
 - (id)specifiers {
-	if(_specifiers == nil) {
+	if (_specifiers == nil) {
 		_specifiers = [[self loadSpecifiersFromPlistName:@"ZeppelinSettings" target:self] retain];
 	}
 	return _specifiers;
@@ -44,7 +48,7 @@
 - (id)readPreferenceValue:(PSSpecifier *)spec {
     NSString *key = [spec propertyForKey:@"key"];
     id defaultValue = [spec propertyForKey:@"default"];
-    id plistValue = [_settings objectForKey:key];
+    id plistValue = [self.settings objectForKey:key];
 
     if (!plistValue)
         return defaultValue;
@@ -95,10 +99,10 @@
 }
 
 - (NSNumber *)enabled {
-	return [_settings objectForKey:PrefsEnabledKey];
+	return [self.settings objectForKey:PrefsEnabledKey];
 }
 
-- (void)setEnabled:(NSNumber*)enabled {
+- (void)setEnabled:(NSNumber *)enabled {
 	[_settings setObject:enabled forKey:PrefsEnabledKey];
 	[self sendSettings];
 }
@@ -123,6 +127,7 @@
 	NSString *carrierName = carrier.carrierName;
 	[netinfo release];
 
+	// the prompt api was added in ios 5
 	if (IS_IOS_40()) {
 		if (!self.carrierTextField) {
 			self.carrierTextField = [[[UITextField alloc] initWithFrame:CGRectMake(12, 50, 260, 25)] autorelease];
@@ -151,7 +156,7 @@
 }
 
 - (void)writeSettings {
-	NSData *data = [NSPropertyListSerialization dataFromPropertyList:_settings format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
+	NSData *data = [NSPropertyListSerialization dataFromPropertyList:self.settings format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
 
 	if (!data)
 		return;
@@ -163,7 +168,7 @@
 	[self writeSettings];
 
 	CFNotificationCenterRef r = CFNotificationCenterGetDarwinNotifyCenter();
-	CFNotificationCenterPostNotification(r, (CFStringRef)kZeppelinSettingsChanged, NULL, (CFDictionaryRef)_settings, true);
+	CFNotificationCenterPostNotification(r, (CFStringRef)kZeppelinSettingsChanged, NULL, (CFDictionaryRef)self.settings, true);
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(int)buttonIndex { 
@@ -195,7 +200,7 @@
 
 	self.carrierAlertView = nil;
 	self.carrierTextField = nil;
-	[_settings release];
+	self.settings = nil;
 
 	[super dealloc];
 }
