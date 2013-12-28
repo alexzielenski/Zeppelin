@@ -53,16 +53,12 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 	NSLog(@"Zeppelin: update service item");
 
 	ZPImageServer *server = [ZPImageServer sharedServer];
-
 	StatusBarData70 *data = &MSHookIvar<StatusBarData70>(self, "_data");
 
-    if (server.carrierText && server.carrierText.length)
-        strncpy(data->serviceString, [server.carrierText cStringUsingEncoding:NSUTF8StringEncoding], 100);
-    else
-        strncpy(data->serviceString, [(NSString *)self.operatorName cStringUsingEncoding: NSUTF8StringEncoding], 100);
+    [(server.carrierText && server.carrierText.length) ? server.carrierText : (NSString *)self.operatorName getCString:&data->serviceString[0] maxLength:100 encoding:NSUTF8StringEncoding];
+
 	if (!server.enabled) {
 		NSLog(@"Zeppelin: Disabled");
-		strncpy(data->operatorDirectory, "", 1024);
 		data->operatorDirectory[0] = '\0';
 		data->serviceContentType = 3;
 		return;
@@ -80,16 +76,10 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 
 	NSString *dir = [server currentThemeDirectory];
 
-	strncpy(data->serviceImages[0], [silver cStringUsingEncoding:NSUTF8StringEncoding], 100);
-	strncpy(data->serviceImages[1], [black cStringUsingEncoding:NSUTF8StringEncoding], 100);
-	strncpy(data->operatorDirectory, [dir fileSystemRepresentation], 1024);
-
-	data->serviceContentType        = 3;
-
-	data->serviceImages[0][99]      = '\0'; // last index should be null
-	data->serviceImages[1][99]      = '\0';
-	data->operatorDirectory[1023]   = '\0';
-
+    [silver getCString:&data->serviceImages[0][0] maxLength:100 encoding:NSUTF8StringEncoding];
+    [black getCString:&data->serviceImages[1][0] maxLength:100 encoding:NSUTF8StringEncoding];
+    [dir getCString:&data->operatorDirectory[0] maxLength: 1024 encoding: NSUTF8StringEncoding];
+	data->serviceContentType = 3;
 }
 
 -(BOOL)_setItem:(int)item enabled:(BOOL)enabled {
@@ -139,11 +129,9 @@ static void setSettingsNotification(CFNotificationCenterRef center,
         if (carrierText && carrierText.length) {
             StatusBarDataCommon *data = &MSHookIvar<StatusBarDataCommon>(self, "_data");
             
-            strncpy(data->serviceString, [carrierText cStringUsingEncoding:NSUTF8StringEncoding], 100);
+            [carrierText getCString:&data->serviceString[0] maxLength:100 encoding:NSUTF8StringEncoding];
             data->serviceContentType = 1;
-
-            strncpy(data->operatorDirectory, "", 1024);
-            data->operatorDirectory[1023] = '\0';
+            data->operatorDirectory[0] = '\0';
         }
 
         if (!server.enabled || server.shouldUseOldMethod) {
@@ -155,23 +143,18 @@ static void setSettingsNotification(CFNotificationCenterRef center,
         NSString *silver = server.currentSilverName;
         NSString *black  = server.currentBlackName;
         NSString *etched = server.currentEtchedName;
-        
-        NSString *dir = server.currentThemeDirectory;
+        NSString *dir    = server.currentThemeDirectory;
         
         if (IS_IOS_60()) {
             StatusBarData60 *data = &MSHookIvar<StatusBarData60>(self, "_data");
-                                        
-            strncpy(data->serviceImages[0], [black cStringUsingEncoding:NSUTF8StringEncoding], 100);
-            strncpy(data->serviceImages[1], [etched cStringUsingEncoding:NSUTF8StringEncoding], 100);
-            strncpy(data->operatorDirectory, [dir fileSystemRepresentation], 1024);        
+                   
+            [black getCString:&data->serviceImages[0][0] maxLength:100 encoding:NSUTF8StringEncoding];
+            [etched getCString:&data->serviceImages[1][0] maxLength:100 encoding:NSUTF8StringEncoding];
+            [dir getCString:&data->operatorDirectory[0] maxLength:100 encoding:NSUTF8StringEncoding];
 
             // data->serviceCrossfadeString[0] = '\0'; // eliminate the titles
             // data->serviceString[0]          = '\0';
             data->serviceContentType        = 3;
-
-            data->serviceImages[0][99]      = '\0'; // last index should be null
-            data->serviceImages[1][99]      = '\0';
-            data->operatorDirectory[1023]   = '\0';
 
             NSString *(&service)[2] = MSHookIvar<NSString *[2]>(self, "_serviceImages");
             [service[0] release];
@@ -182,20 +165,12 @@ static void setSettingsNotification(CFNotificationCenterRef center,
                         
         } else  if (IS_IOS_50()) {
             StatusBarData50 *data = &MSHookIvar<StatusBarData50>(self, "_data");
-                                
-            strncpy(data->serviceImages[0], [silver cStringUsingEncoding:NSUTF8StringEncoding], 100);
-            strncpy(data->serviceImages[1], [black cStringUsingEncoding:NSUTF8StringEncoding], 100);
-            strncpy(data->serviceImages[2], [etched cStringUsingEncoding:NSUTF8StringEncoding], 100);        
-            strncpy(data->operatorDirectory, [dir fileSystemRepresentation], 1024);        
-                
-            // data->serviceCrossfadeString[0] = '\0'; // eliminate the titles
-            // data->serviceString[0]          = '\0';
-            data->serviceContentType        = 3;
-                                
-            data->serviceImages[0][99]      = '\0'; // last index should be null
-            data->serviceImages[1][99]      = '\0';
-            data->serviceImages[2][99]      = '\0';
-            data->operatorDirectory[1023]   = '\0';
+            
+            [silver getCString:&data->serviceImages[0][0] maxLength:100 encoding:NSUTF8StringEncoding];                    
+            [black getCString:&data->serviceImages[1][0] maxLength:100 encoding:NSUTF8StringEncoding];
+            [etched getCString:&data->serviceImages[2][0] maxLength:100 encoding:NSUTF8StringEncoding];
+            [dir getCString:&data->operatorDirectory[0] maxLength:100 encoding:NSUTF8StringEncoding];   
+            data->serviceContentType = 3;
                                 
             NSString *(&service)[3] = MSHookIvar<NSString *[3]>(self, "_serviceImages");
             [service[0] release];
@@ -208,16 +183,11 @@ static void setSettingsNotification(CFNotificationCenterRef center,
                 
         } else {
             StatusBarData42 *data = &MSHookIvar<StatusBarData42>(self, "_data");
-                
-            strncpy(data->serviceImageBlack, [black cStringUsingEncoding:NSUTF8StringEncoding], 100);
-            strncpy(data->serviceImageSilver, [silver cStringUsingEncoding:NSUTF8StringEncoding], 100);                
-            strncpy(data->operatorDirectory, [dir fileSystemRepresentation], 1024);        
-                 
-            data->serviceImageBlack[99]     = '\0';
-            data->serviceImageSilver[99]    = '\0';
-            // data->serviceString[0]          = '\0';
-            data->operatorDirectory[1023]   = '\0';
-            data->serviceContentType        = 3;
+            
+            [silver getCString:&data->serviceImageSilver[0] maxLength:100 encoding:NSUTF8StringEncoding];                    
+            [black getCString:&data->serviceImageBlack[0] maxLength:100 encoding:NSUTF8StringEncoding];
+            [dir getCString:&data->operatorDirectory[0] maxLength:100 encoding:NSUTF8StringEncoding];
+            data->serviceContentType = 3;
                  
             NSString *&serviceImageBlack  = MSHookIvar<NSString *>(self, "_serviceImageBlack");
             NSString *&serviceImageSilver = MSHookIvar<NSString *>(self, "_serviceImageSilver");
@@ -231,8 +201,8 @@ static void setSettingsNotification(CFNotificationCenterRef center,
         
         NSString *&operatorDirectory = MSHookIvar<NSString *>(self, "_operatorDirectory");
         if (operatorDirectory) {
-                [operatorDirectory release];
-                operatorDirectory = nil;
+            [operatorDirectory release];
+            operatorDirectory = nil;
         }
         operatorDirectory = dir.copy;
 
@@ -241,7 +211,6 @@ static void setSettingsNotification(CFNotificationCenterRef center,
             [serviceString release];
             serviceString = nil;
         }
-
         serviceString = server.carrierText;
 
         [self _dataChanged];
@@ -334,7 +303,7 @@ static void setSettingsNotification(CFNotificationCenterRef center,
 	} else if ([%c(SBStatusBarDataManager) instancesRespondToSelector: @selector(_getServiceImageNames:directory:forOperator:statusBarCarrierName:)] ) {
         NSLog(@"Zeppelin: loading ios 5 or 6");
         %init(iOS5);        
-    } else if (NO) {
+    } else {
         NSLog(@"Zeppelin: init ios 4");
         %init(iOS4);
     }
