@@ -64,7 +64,6 @@
 	NSString *name = nil;
 	if (!(name = RETINIZE([self.settings objectForKey:PrefsAltEtchedKey])))
 		name = [NSString zp_etchedName];
-		name = [name stringByAppendingPathExtension:@"png"];
 	return name;
 }
 
