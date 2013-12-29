@@ -115,7 +115,7 @@
 	
 		}
 		ZeppelinSettingsListController *ctrl = (ZeppelinSettingsListController*)self.parentController;
-		[ctrl.settings setObject: hiddenThemes forKey: PrefsHiddenKey];
+		[(NSMutableDictionary *)ctrl.settings setObject: hiddenThemes forKey: PrefsHiddenKey];
 		[ctrl writeSettings]; // no need to send them because they only pertain to the settings part of Zeppelin
 	}
 	

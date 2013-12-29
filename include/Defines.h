@@ -41,11 +41,15 @@
 #define IS_IOS_40()          ([[UIDevice currentDevice] iOSVersionIsAtLeast: @"4.2"] && !IS_IOS_50() && !IS_IOS_60() && !IS_IOS_70_OR_LATER())
 
 typedef struct {
+    BOOL itemIsEnabled[25]; // 25 max items
     int gsmSignalStrengthRaw;
     int gsmSignalStrengthBars;
     char serviceString[100];
     char serviceCrossfadeString[100];
     unsigned int serviceContentType;
+    char serviceImages[3][100]; // 3 max items
+    char serviceImageBlack[100];
+    char serviceImageSilver[100];
     int wifiSignalStrengthRaw;
     int wifiSignalStrengthBars;
     unsigned int dataNetworkType;

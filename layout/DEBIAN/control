@@ -1,7 +1,7 @@
 Package: com.alexzielenski.zeppelin
 Name: Zeppelin
 Depends: firmware (>= 4.2), mobilesubstrate, preferenceloader
-Version: 2.0.0
+Version: 2.0.1
 Architecture: iphoneos-arm
 Description: Replaces carrier text with an image!
 Maintainer: Alex Zielenski
@@ -9,3 +9,4 @@ Author: Alex Zielenski <http://www.alexzielenski.com>
 Homepage: http://www.alexzielenski.com
 Section: Tweaks
 Sponsor: Alex Zielenski <support@alexzielenski.com>
+Icon: http://i.imgur.com/PtfISWz.png

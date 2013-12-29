@@ -6,8 +6,8 @@
 @end
 
 @implementation ZPImageServer
-@synthesize enabled, noLogo, shouldTint, themeName, packName, _settings, shouldUseOldMethod, carrierText;
-
+@synthesize enabled, noLogo, shouldTint, themeName, packName, _settings, shouldUseOldMethod;
+@synthesize carrierText;
 + (ZPImageServer *)sharedServer {
 	static ZPImageServer *server = nil;
 	if (!server) {
@@ -19,12 +19,14 @@
 - (id)init {
 	if ((self = [super init])) {
 		// get the settings
-		self.settings = [NSDictionary dictionaryWithContentsOfFile:PREFS_PATH];
+		[self setSettings: [NSDictionary dictionaryWithContentsOfFile:PREFS_PATH]];
 	}
 	return self;
 }
 
 - (void)setSettings:(NSDictionary *)newSettings {
+	NSLog(@"Zeppelin: set settings");
+
 	self._settings = newSettings;
 
 	if (!self._settings) {
@@ -32,14 +34,21 @@
 		self._settings = DefaultPrefs;
 	}
 
-	self.themeName   = [self._settings objectForKey:PrefsThemeKey];
-	self.enabled     = [[self._settings objectForKey:PrefsEnabledKey] boolValue];
-	self.noLogo      = [[self._settings objectForKey:PrefsThemeKey] isEqualToString:@"None"];
-	self.shouldTint  = ([[NSFileManager defaultManager] fileExistsAtPath: self.currentLogoPath]);
-	self.shouldUseOldMethod = [[self._settings objectForKey:PrefsOldMethodKey] boolValue];
-	self.carrierText = [self._settings objectForKey:PrefsCarrierTextKey];
-	// self.packName       = [self._settings objectForKey: PrefsPackKey];
+	NSNumber *nabled = [_settings objectForKey:PrefsEnabledKey];
+	NSNumber *useOld = [_settings objectForKey:PrefsOldMethodKey];
 
+	self.themeName   = [_settings objectForKey:PrefsThemeKey];
+	if (nabled)
+		self.enabled = [nabled boolValue];
+	self.noLogo      = [[_settings objectForKey:PrefsThemeKey] isEqualToString:@"None"];
+	if (useOld)
+		self.shouldUseOldMethod = [useOld boolValue];
+	self.carrierText = [_settings objectForKey:@"carrierText"];
+
+	if (IS_IOS_70_OR_LATER())
+		self.shouldTint = ([[NSFileManager defaultManager] fileExistsAtPath: self.currentLogoPath]);
+
+	// self.packName    = [_settings objectForKey:PrefsPackKey];
 }
 
 - (NSDictionary *)settings {

@@ -1,6 +1,6 @@
 #import "Defines.h"
 
-@interface ZPImageServer : NSObject 
+@interface ZPImageServer : NSObject
 @property (assign, nonatomic, getter=isEnabled) BOOL enabled;
 @property (assign, nonatomic) BOOL noLogo;
 @property (assign, nonatomic) BOOL shouldTint;

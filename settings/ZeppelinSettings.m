@@ -5,18 +5,22 @@
 #import "Defines.h"
 #import "ZPTheme.h"
 
+@interface UIAlertView ()
+- (void)addTextFieldWithValue:(NSString *)val label:(NSString *)label;
+- (UITextField *)textField;
+- (void)setNumberOfRows:(int)num;
+@end
+
 @interface ZeppelinSettingsListController () {
 	NSMutableDictionary *_settings;
 }
 - (IBAction)carrierText:(UIBarButtonItem *)item;
-@property (retain, nonatomic) UITextField *carrierTextField;
 @property (retain, nonatomic) UIAlertView *carrierAlertView;
 @property (nonatomic, retain, readwrite) NSMutableDictionary *settings;
 @end
 
 @implementation ZeppelinSettingsListController
 @synthesize settings = _settings;
-@synthesize carrierTextButton;
 @synthesize carrierAlertView;
 
 - (id)initForContentSize:(CGSize)size {
@@ -112,31 +116,28 @@
 }
 
 - (IBAction)carrierText:(UIBarButtonItem *)item {
-
 	if (!self.carrierAlertView) {
-		self.carrierAlertView = [[UIAlertView alloc] initWithTitle:@"Enter your carrier text:"
-		                                                 message:@"\n\n"
+		self.carrierAlertView = [[UIAlertView alloc] initWithTitle:@"Change Carrier Name"
+		                                                 message:@""
 		                                                delegate:self
 		                                       cancelButtonTitle:@"Cancel"
-		                                       otherButtonTitles:@"Save", @"Revert", nil];
+		                                       otherButtonTitles:@"Save", nil];
 	}
 
 	// the prompt api was added in ios 5
-	if (IS_IOS_40()) {
-		if (!self.carrierTextField) {
-			self.carrierTextField = [[[UITextField alloc] initWithFrame:CGRectMake(12, 50, 260, 25)] autorelease];
-			[self.carrierTextField setBackgroundColor:[UIColor whiteColor]];
-			self.carrierTextField.keyboardAppearance = UIKeyboardAppearanceAlert;
-			[self.carrierAlertView addSubview:self.carrierTextField];
+	if (!IS_IOS_70_OR_LATER()) {
+		if (!self.carrierAlertView.textField) {
+			[self.carrierAlertView addTextFieldWithValue: @"" label: @""];
 		}
 
-		self.carrierTextField.text = [_settings objectForKey: PrefsCarrierTextKey];
+		self.carrierAlertView.textField.text = [_settings objectForKey: PrefsCarrierTextKey];
+
 
 		// show the dialog box
 		[self.carrierAlertView show];
 
 		// set cursor and show keyboard
-		[self.carrierTextField becomeFirstResponder];
+		[self.carrierAlertView.textField becomeFirstResponder];
 	} else {
 		self.carrierAlertView.alertViewStyle = UIAlertViewStylePlainTextInput;
 		UITextField *field = [self.carrierAlertView textFieldAtIndex: 0];
@@ -168,16 +169,16 @@
 	if (buttonIndex == 1) {// save
 		NSString *text = nil;
 
-		if ([alertView respondsToSelector: @selector(textFieldAtIndex:)]) {
+		if (IS_IOS_70_OR_LATER()) {
 		    text = [[alertView textFieldAtIndex:0] text];
 		} else {
-			text = self.carrierTextField.text;
+			text = alertView.textField.text;
 		}
 
-		if (text)
+		if (text && text.length)
 			[_settings setObject:text forKey: PrefsCarrierTextKey];
-	} else if (buttonIndex == 2) { // revert
-		[_settings removeObjectForKey: PrefsCarrierTextKey];
+		else
+			[_settings removeObjectForKey: PrefsCarrierTextKey];
 	}
 
 	[self sendSettings];
@@ -192,7 +193,6 @@
 	[self writeSettings];
 
 	self.carrierAlertView = nil;
-	self.carrierTextField = nil;
 	self.settings = nil;
 
 	[super dealloc];
