@@ -48,7 +48,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Zeppelin 1.1.1</string>
+			<string>Zeppelin 2.0.1</string>
 			<key>isStaticText</key>
 			<true/>
 		</dict>
@@ -61,10 +61,18 @@
 			<string>Visit My Website</string>
 		</dict>
 		<dict>
+			<key>action</key>
+			<string>visitTwitter:</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Twitter @alexzielenski</string>
+		</dict>
+		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Copyright © 2012 Alex Zielenski.
+			<string>Copyright © 2014 Alex Zielenski.
 Icon by Martin Sørensen.</string>
 			<key>isStaticText</key>
 			<true/>
