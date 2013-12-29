@@ -25,8 +25,6 @@
 }
 
 - (void)setSettings:(NSDictionary *)newSettings {
-	NSLog(@"Zeppelin: set settings");
-
 	self._settings = newSettings;
 
 	if (!self._settings) {
