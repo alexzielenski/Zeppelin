@@ -12,8 +12,8 @@
 @interface UIStatusBarServiceItemView ()
 - (UIImage *)zp_imageNamed:(NSString *)name;
 - (void)zp_cacheImage:(UIImage *)image named:(NSString *)name;
-- (BOOL)shouldTint;
-- (BOOL)isEnabled;
+- (BOOL)zp_shouldTint;
+- (BOOL)zp_isEnabled;
 @end
 
 %hook UIStatusBarServiceItemView
@@ -37,9 +37,8 @@ static char kIMAGECACHE;
 }
 
 - (id)_serviceContentsImage {	
-	NSString *operatorDirectory = objc_getAssociatedObject(self, &kOPERATORDIRECTORY);
 
-	if (!self.isEnabled) {
+	if (!self.zp_isEnabled) {
 		return %orig;
 	}
 
@@ -48,9 +47,10 @@ static char kIMAGECACHE;
 
 	NSString *blackImage = objc_getAssociatedObject(self, &kBLACKIMAGE);
 	NSString *whiteImage = objc_getAssociatedObject(self, &kWHITEIMAGE);
+	NSString *operatorDirectory = objc_getAssociatedObject(self, &kOPERATORDIRECTORY);
 
 	UIImage *image = nil;
-	if (self.shouldTint) {
+	if (self.zp_shouldTint) {
 		NSString *cacheName = [operatorDirectory.lastPathComponent stringByAppendingPathComponent: blackImage];
 
 		if (!(image = [self zp_imageNamed: cacheName])) {
@@ -73,35 +73,35 @@ static char kIMAGECACHE;
 	}
 
 	return [_UILegibilityImageSet imageFromImage: image
-								 withShadowImage: nil];
+								 withShadowImage: [[[UIImage alloc] init] autorelease]];
 }
 
 - (CGFloat)extraLeftPadding {
-	if (self.shouldTint && self.isEnabled)
+	if (self.zp_shouldTint && self.zp_isEnabled)
 		return 2.0;
 	return %orig;
 }
 
 - (CGFloat)extraRightPadding {
-	if (self.shouldTint && self.isEnabled)
+	if (self.zp_shouldTint && self.zp_isEnabled)
 		return 4.0;
 	return %orig;
 }
 
 - (CGFloat)standardPadding {
-	if (self.shouldTint && self.isEnabled)
+	if (self.zp_shouldTint && self.zp_isEnabled)
 		return 0.0;
 	return %orig;
 }
 
 %new
-- (BOOL)shouldTint {
+- (BOOL)zp_shouldTint {
 	NSString *whiteImage = objc_getAssociatedObject(self, &kWHITEIMAGE);
 	return ([whiteImage isEqualToString: @"tint"]);
 }
 
 %new
-- (BOOL)isEnabled {
+- (BOOL)zp_isEnabled {
 	NSString *operatorDirectory = objc_getAssociatedObject(self, &kOPERATORDIRECTORY);
 	return (operatorDirectory.length);
 }

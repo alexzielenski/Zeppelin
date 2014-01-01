@@ -21,6 +21,10 @@ Make your images as small as possible within 16px tall (32px on retina) and 40px
 
 **logo**: *(iOS 7+)* Make this a black silhouette of your logo with no whitespace around it. Zeppelin will color it accordingly.
 
+**dark**: *(iOS 7+)* Shown when statusbar icons are dark. Do whatever you want with this image. It will be used on iOS 7 if **logo** does not exist and not be tinted.
+
+**light**: *(iOS 7+)* Shown when statusbar icons are light. Do whatever you want with this image. It will be used on iOS 7 if **logo** does not exist and not be tinted.
+
 ## Filenames
 
 Any theme you create should have a 1x and 2x representation of each image. So the possible file names are:
@@ -68,15 +72,15 @@ You do not need to have all of the images present. But here are breakdowns of th
 	
 Zeppelin will tint these images depending on the context of the menubar. If you wish to not have your logo tinted at all, instead use these images:
 
-	silver.png      # used when the rest of the colors are dark
-	silver@2x.png
-	black.png       # used when the rest of the colors are light
-	black@2x.png
+	dark.png        # used when the rest of the colors are dark
+	dark@2x.png
+	light.png       # used when the rest of the colors are light
+	light@2x.png
 	
 \* Files with the *@2x* suffix are used on retina devices
 ## Styles
 
-A template can be found at https://github.com/alexzielenski/Zeppelin/blob/master/Zeppelin%20Logo%20PSD.psd with layer styles used for **silver**, **black**, and **etched**.
+A template can be found [here](https://github.com/alexzielenski/Zeppelin/blob/master/Zeppelin%20Logo%20PSD.psd) with layer styles used for **silver**, **black**, and **etched**.
 
 No template is needed for **logo** because Zeppelin colors it by itself. Just make it a black image of your logo
 

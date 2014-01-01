@@ -89,14 +89,15 @@
 	[_settings removeObjectForKey:PrefsAltBlackKey];
 	[_settings removeObjectForKey:PrefsAltEtchedKey];
 	[_settings removeObjectForKey:PrefsAltLogoKey];
+	[_settings removeObjectForKey:PrefsAltDarkKey];
+	[_settings removeObjectForKey:PrefsAltLightKey];
+
+	[_settings setObject: [NSNumber numberWithBool: theme.shouldTint] forKey: PrefsShouldTintKey];
+	[_settings setObject: [NSNumber numberWithBool: theme.shouldUseLegacyImages] forKey: PrefsUseLegacyKey];
 	
 	UITableView *table = self.table;
 	UITableViewCell *cell = [table cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
 	cell.detailTextLabel.text = theme.name;
-
-	if (theme.useDark) {
-		[_settings setObject: kDarkImageName forKey: PrefsAltLogoKey];
-	}
 	
 	[self sendSettings];
 }

@@ -2,7 +2,7 @@
 #import "Defines.h"
 
 @implementation ZPTheme
-@synthesize name, image, whiteImage, pack, hidden, useDark;
+@synthesize name, image, whiteImage, pack, hidden, shouldTint, shouldUseLegacyImages;
 
 + (ZPTheme*)themeWithPath:(NSString*)path {
 	return [[[ZPTheme alloc] initWithPath:path] autorelease];
@@ -32,16 +32,18 @@
 			if (!self.image) {
 				silverName = RETINIZE(kDarkImageName);
 				self.image = self.whiteImage = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:silverName]];
-
-				// later on, if useDark is true, the altlogoname pref setting will be used to set it
-				if (self.image)
-					self.useDark = YES;
+			} else {
+				self.shouldTint = YES;
 			}
 		}
 
 		if (!self.image) {
 			silverName = RETINIZE(kSilverImageName);
 			self.image = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:silverName]];
+
+			if (self.image) {
+				self.shouldUseLegacyImages = YES;
+			}
 		}
 
 		NSString *blackName;

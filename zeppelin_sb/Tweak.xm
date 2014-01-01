@@ -2,6 +2,7 @@
 #import <objc/runtime.h>
 
 #import <SpringBoard/SBStatusBarDataManager.h>
+#import <SpringBoard/SBTelephonyManager.h>
 #import <SpringBoard70/SBStatusBarStateAggregator.h>
 
 #import "ZPImageServer.h"
@@ -48,29 +49,32 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
 }
 
 - (void)_updateServiceItem {
-	%orig();
-	NSLog(@"Zeppelin: update service item");
+	%orig;
+	ZLog(@"update service item");
 
 	ZPImageServer *server = [ZPImageServer sharedServer];
 	StatusBarData70 *data = &MSHookIvar<StatusBarData70>(self, "_data");
 
-    // [(server.carrierText && server.carrierText.length) ? server.carrierText : (NSString *)self.operatorName getCString:&data->serviceString[0] maxLength:100 encoding:NSUTF8StringEncoding];
+    [(server.carrierText) ? server.carrierText : (NSString *)self.operatorName getCString:&data->serviceString[0] maxLength:100 encoding:NSUTF8StringEncoding];
 
 	if (!server.enabled) {
-		NSLog(@"Zeppelin: Disabled");
+		ZLog(@"Disabled");
 		data->operatorDirectory[0] = '\0';
 		data->serviceContentType = 3;
 		return;
 	}
 
 	NSString *black; 
-	NSString *silver;
+	NSString *silver = server.currentLogoName;
+
     if (server.shouldTint) {
-        black  =  @"tint";
-        silver = server.currentLogoName;
+        black  = @"tint";
+    } else if (server.shouldUseLegacyImages) {
+        black  = server.currentBlackName;
+        silver = server.currentSilverName;
     } else {
-        black = [server currentBlackName];
-        silver = [server currentSilverName];
+        silver = server.currentLightName;
+        black  = server.currentDarkName;
     }
 
 	NSString *dir = [server currentThemeDirectory];
@@ -85,7 +89,7 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
     ZPImageServer *server = [ZPImageServer sharedServer];
         
     if (item == 4 && [server noLogo] && server.isEnabled && enabled) {
-            NSLog(@"Zeppelin: Disabling Item: %i", item);
+            ZLog(@"Disabling Item: %i", item);
             return %orig(item, NO);
     }
 
@@ -96,15 +100,6 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
 
 %end
 
-%hook SBTelephonyManager
-
-- (NSString *)operatorName {
-    ZPImageServer *server = [ZPImageServer sharedServer];
-    return server.carrierText ? server.carrierText : %orig;
-}
-
-%end
-
 %group legacy
 
 %hook SBStatusBarDataManager
@@ -112,7 +107,7 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
     ZPImageServer *server = [ZPImageServer sharedServer];
         
     if (item == 4 && [server noLogo] && server.isEnabled) {
-        NSLog(@"Zeppelin: Disabling Item: %i", item);
+        ZLog(@"Disabling Item: %i", item);
         %orig(item, NO);
         return;
     }
@@ -133,41 +128,55 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
 - (void)_updateServiceItem {
     %orig;
     
-    NSLog(@"Zeppelin: update service item");
+    ZLog(@"update service item");
     
     ZPImageServer *server = [ZPImageServer sharedServer];
-    if (!server.enabled || server.shouldUseOldMethod) {
-        NSLog(@"Zeppelin: Disabled");
-        return;
-    }
+    BOOL apply = (server.enabled && !server.shouldUseOldMethod);
+
+    if (!apply)
+        ZLog(@"Disabled");
 
     NSString *silver = server.currentSilverName;
     NSString *black  = server.currentBlackName;
     NSString *etched = server.currentEtchedName;
     NSString *dir    = server.currentThemeDirectory;
-    
+    NSString *serviceString = server.carrierText ? server.carrierText : MSHookIvar<NSString *>(self , "_serviceString");
+
     if (IS_IOS_60()) {
         StatusBarData60 *data = &MSHookIvar<StatusBarData60>(self, "_data");
                
-        [black getCString:&data->serviceImages[0][0] maxLength:100 encoding:NSUTF8StringEncoding];
-        [etched getCString:&data->serviceImages[1][0] maxLength:100 encoding:NSUTF8StringEncoding];
-        [dir getCString:&data->operatorDirectory[0] maxLength:100 encoding:NSUTF8StringEncoding];
-        data->serviceContentType = 3;
+        if (apply) {
+            [black getCString:&data->serviceImages[0][0] maxLength:100 encoding:NSUTF8StringEncoding];
+            [etched getCString:&data->serviceImages[1][0] maxLength:100 encoding:NSUTF8StringEncoding];
+            [dir getCString:&data->operatorDirectory[0] maxLength:100 encoding:NSUTF8StringEncoding];
+            data->serviceContentType = 3;
+        } else {
+            [serviceString getCString:&data->serviceString[0] maxLength:100 encoding:NSUTF8StringEncoding];
+        }
+        
     } else if (IS_IOS_50()) {
         StatusBarData50 *data = &MSHookIvar<StatusBarData50>(self, "_data");
         
-        [silver getCString:&data->serviceImages[0][0] maxLength:100 encoding:NSUTF8StringEncoding];                    
-        [black getCString:&data->serviceImages[1][0] maxLength:100 encoding:NSUTF8StringEncoding];
-        [etched getCString:&data->serviceImages[2][0] maxLength:100 encoding:NSUTF8StringEncoding];
-        [dir getCString:&data->operatorDirectory[0] maxLength:100 encoding:NSUTF8StringEncoding];
-        data->serviceContentType = 3;
+        if (apply) {
+            [silver getCString:&data->serviceImages[0][0] maxLength:100 encoding:NSUTF8StringEncoding];                    
+            [black getCString:&data->serviceImages[1][0] maxLength:100 encoding:NSUTF8StringEncoding];
+            [etched getCString:&data->serviceImages[2][0] maxLength:100 encoding:NSUTF8StringEncoding];
+            [dir getCString:&data->operatorDirectory[0] maxLength:100 encoding:NSUTF8StringEncoding];
+            data->serviceContentType = 3;
+        } else {
+            [serviceString getCString:&data->serviceString[0] maxLength:100 encoding:NSUTF8StringEncoding];
+        }
     } else {
         StatusBarData42 *data = &MSHookIvar<StatusBarData42>(self, "_data");
         
-        [silver getCString:&data->serviceImageSilver[0] maxLength:100 encoding:NSUTF8StringEncoding];                    
-        [black getCString:&data->serviceImageBlack[0] maxLength:100 encoding:NSUTF8StringEncoding];
-        [dir getCString:&data->operatorDirectory[0] maxLength:100 encoding:NSUTF8StringEncoding];
-        data->serviceContentType = 3;
+        if (apply) {
+            [silver getCString:&data->serviceImageSilver[0] maxLength:100 encoding:NSUTF8StringEncoding];                    
+            [black getCString:&data->serviceImageBlack[0] maxLength:100 encoding:NSUTF8StringEncoding];
+            [dir getCString:&data->operatorDirectory[0] maxLength:100 encoding:NSUTF8StringEncoding];
+            data->serviceContentType = 3;
+        } else {
+            [serviceString getCString:&data->serviceString[0] maxLength:100 encoding:NSUTF8StringEncoding];
+        }
     }
 }
 %end
@@ -176,7 +185,7 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
 %group iOS5
 %hook SBStatusBarDataManager
 - (BOOL)_getServiceImageNames:(NSString ***)names directory:(NSString **)directory forOperator:(NSString *)anOperator statusBarCarrierName:(NSString **)carrierName {        
-    NSLog(@"Zeppelin: Getting images for operator: %@", anOperator);
+    ZLog(@"Getting images for operator: %@", anOperator);
 
     ZPImageServer *server = [ZPImageServer sharedServer];
     BOOL enabled = server.isEnabled;
@@ -209,7 +218,7 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
 %group iOS4
 %hook SBStatusBarDataManager
 - (BOOL)_getBlackImageName:(NSString **)blackImageName silverImageName:(NSString **)silverImageName directory:(NSString **)directory forOperator:(NSString *)anOperator statusBarCarrierName:(NSString **)carrierName {
-        NSLog(@"Zeppelin: Getting images for operator: %@", anOperator);
+        ZLog(@"Getting images for operator: %@", anOperator);
         ZPImageServer *server = [ZPImageServer sharedServer];
         *carrierName = server.carrierText;
 
@@ -255,17 +264,17 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
 	%init;
 
 	if (%c(SBStatusBarStateAggregator)) {
-		NSLog(@"Zeppelin: loading ios 7+");
+		ZLog(@"loading ios 7+");
         %init(iOS7);
 	} else {
         %init(legacy);
     } 
 
     if ([%c(SBStatusBarDataManager) instancesRespondToSelector: @selector(_getServiceImageNames:directory:forOperator:statusBarCarrierName:)] ) {
-        NSLog(@"Zeppelin: loading ios 5 or 6");
+        ZLog(@"loading ios 5 or 6");
         %init(iOS5);        
-    } else {
-        NSLog(@"Zeppelin: init ios 4");
+    } else if (%c(SBStatusBarDataManager)) {
+        ZLog(@"loading ios 4");
         %init(iOS4);
     }
 }

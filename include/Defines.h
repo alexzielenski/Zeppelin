@@ -1,6 +1,8 @@
 #import <UIKit/UIKit.h>
 #import <substrate.h>
 
+#define ZLog(format, ...) NSLog(@"Zeppelin: %@", [NSString stringWithFormat: format, ## __VA_ARGS__])
+
 #define PrefsThemeKey        @"theme"
 #define PrefsCarrierTextKey  @"carrierText"
 #define PrefsUseTextKey      @"useText"
@@ -10,8 +12,12 @@
 #define PrefsAltBlackKey     @"altBlack"
 #define PrefsAltEtchedKey    @"altEtched"
 #define PrefsAltLogoKey      @"altLogo"
+#define PrefsAltDarkKey      @"altDark"
+#define PrefsAltLightKey     @"altLight"
 #define PrefsPackKey         @"pack"
 #define PrefsHiddenKey       @"hiddenThemes"
+#define PrefsShouldTintKey   @"shouldTint"
+#define PrefsUseLegacyKey    @"useLegacy"
 
 #define IN_SPRINGBOARD()     ([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.apple.springboard"])
 #define IS_RETINA()          ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale] == 2)
@@ -26,10 +32,11 @@
 #define kEtchedImageName     @"etched"
 #define kLogoImageName       @"logo"
 #define kDarkImageName       @"dark"
+#define kLightImageName      @"light"
 
 #define kThemesDirectory     @"/Library/Zeppelin"
 #define kPacksDirectory      @"/Library/Zeppelin/Packs"
-#define DefaultPrefs         [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Zeppelin", PrefsPackKey, @"Batman", PrefsThemeKey, [NSNumber numberWithBool:YES], PrefsEnabledKey, nil]
+#define DefaultPrefs         [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Zeppelin", PrefsPackKey, @"Batman", PrefsThemeKey, [NSNumber numberWithBool:YES], PrefsEnabledKey, [NSNumber numberWithBool: YES], PrefsShouldTintKey, [NSNumber numberWithBool: NO], PrefsUseLegacyKey, nil]
 
 @interface UIDevice (de)
 - (BOOL)iOSVersionIsAtLeast:(NSString *)vers;

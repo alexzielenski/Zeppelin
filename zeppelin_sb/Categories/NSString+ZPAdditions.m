@@ -19,6 +19,14 @@
 	return RETINIZE(kLogoImageName);
 }
 
++ (NSString *)zp_darkName {
+	return RETINIZE(kDarkImageName);
+}
+
++ (NSString *)zp_lightName {
+	return RETINIZE(kLightImageName);
+}
+
 - (NSString *)zp_convertedCarrierImageName {
 	NSString *file = nil;
 	

@@ -28,7 +28,7 @@
 	self._settings = newSettings;
 
 	if (!self._settings) {
-		NSLog(@"Zeppelin: No settings found. Reverting to defaults.");
+		ZLog(@"No settings found. Reverting to defaults.");
 		self._settings = DefaultPrefs;
 	}
 
@@ -43,8 +43,10 @@
 		self.shouldUseOldMethod = [useOld boolValue];
 	self.carrierText = [_settings objectForKey:@"carrierText"];
 
-	if (IS_IOS_70_OR_LATER())
-		self.shouldTint = ([[NSFileManager defaultManager] fileExistsAtPath: self.currentLogoPath]);
+	if (IS_IOS_70_OR_LATER()) {
+		self.shouldTint = [[_settings objectForKey: PrefsShouldTintKey] boolValue];
+		self.shouldUseLegacyImages = [[_settings objectForKey: PrefsUseLegacyKey] boolValue];
+	}
 
 	// self.packName    = [_settings objectForKey:PrefsPackKey];
 }
@@ -81,6 +83,20 @@
 	return name;
 }
 
+- (NSString *)currentDarkName {
+	NSString *name = nil;
+	if (!(name = RETINIZE([self.settings objectForKey:PrefsAltDarkKey])))
+		name = [NSString zp_darkName];
+	return name;
+}
+
+- (NSString *)currentLightName {
+	NSString *name = nil;
+	if (!(name = RETINIZE([self.settings objectForKey:PrefsAltLightKey])))
+		name = [NSString zp_lightName];
+	return name;
+}
+
 - (NSString *)currentSilverPath {
 	return [self.currentThemeDirectory stringByAppendingPathComponent:self.currentSilverName];
 }
@@ -95,6 +111,14 @@
 
 - (NSString *)currentLogoPath {
 	return [self.currentThemeDirectory stringByAppendingPathComponent:self.currentLogoName];
+}
+
+- (NSString *)currentDarkPath {
+	return [self.currentThemeDirectory stringByAppendingPathComponent:self.currentDarkName];
+}
+
+- (NSString *)currentLightPath {
+	return [self.currentThemeDirectory stringByAppendingPathComponent:self.currentLightName];
 }
 
 - (NSString *)currentThemeDirectory {
