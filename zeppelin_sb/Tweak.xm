@@ -1,8 +1,6 @@
 #import "Defines.h"
-#import <objc/runtime.h>
 
 #import <SpringBoard/SBStatusBarDataManager.h>
-#import <SpringBoard/SBTelephonyManager.h>
 #import <SpringBoard70/SBStatusBarStateAggregator.h>
 
 #import "ZPImageServer.h"
@@ -55,7 +53,7 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
 	ZPImageServer *server = [ZPImageServer sharedServer];
 	StatusBarData70 *data = &MSHookIvar<StatusBarData70>(self, "_data");
 
-    [(server.carrierText) ? server.carrierText : (NSString *)self.operatorName getCString:&data->serviceString[0] maxLength:100 encoding:NSUTF8StringEncoding];
+    [(server.carrierText) ? server.carrierText : MSHookIvar<NSString *>(self , "_serviceString") getCString:&data->serviceString[0] maxLength:100 encoding:NSUTF8StringEncoding];
 
 	if (!server.enabled) {
 		ZLog(@"Disabled");
