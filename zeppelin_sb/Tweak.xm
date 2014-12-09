@@ -48,16 +48,17 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
 
 - (void)_updateServiceItem {
 	%orig;
-	ZLog(@"update service item");
 
 	ZPImageServer *server = [ZPImageServer sharedServer];
 	StatusBarData70 *data = &MSHookIvar<StatusBarData70>(self, "_data");
-
+    ZLog(@"update service item (content type: %d", data->serviceContentType);
+    
     [(server.carrierText) ? server.carrierText : MSHookIvar<NSString *>(self , "_serviceString") getCString:&data->serviceString[0] maxLength:100 encoding:NSUTF8StringEncoding];
 
 	if (!server.enabled) {
 		ZLog(@"Disabled");
 		data->operatorDirectory[0] = '\0';
+		data->serviceContentType = 3;
 		return;
 	}
 
@@ -79,6 +80,7 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
     [silver getCString:&data->serviceImages[0][0] maxLength:100 encoding:NSUTF8StringEncoding];
     [black getCString:&data->serviceImages[1][0] maxLength:100 encoding:NSUTF8StringEncoding];
     [dir getCString:&data->operatorDirectory[0] maxLength: 1024 encoding: NSUTF8StringEncoding];
+    data->serviceContentType = 3;
 }
 
 -(BOOL)_setItem:(int)item enabled:(BOOL)enabled {

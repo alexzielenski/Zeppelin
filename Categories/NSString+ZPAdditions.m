@@ -44,18 +44,24 @@
 	return file;
 }
 
+- (NSString *)scaleTo:(CGFloat)scale {
+	if (scale == 0)
+		return nil;
+	return scale == 1.0 ? self : [self stringByAppendingFormat: @"@%.0fx", scale];
+}
+
 - (NSString *)maximizeScaleInDirectory:(NSString *)dir {
 	CGFloat scale = [[UIScreen mainScreen] respondsToSelector:@selector(scale)] ? [[UIScreen mainScreen] scale] : 1.0;
-	NSString *tentativeName = SCALE(self, scale);
-	while (![[NSFileManager defaultManager] fileExistsAtPath: [dir stringByAppendingPathComponent: tentativeName]]) {
+	NSString *tentativeName = [self scaleTo: scale];
+	while (![[NSFileManager defaultManager] fileExistsAtPath: [dir stringByAppendingPathComponent: [tentativeName stringByAppendingPathExtension: @"png"]]]) {		
 		if (scale == 0) {
-			tentativeName = nil;
-			break;
+			return nil;
 		}
+		
 		scale -= 1;
-		tentativeName = SCALE(self, scale);
+		tentativeName = [self scaleTo: scale];
 	}
-	return tentativeName;
+	return [tentativeName stringByAppendingPathExtension: @"png"];
 }
 
 @end
