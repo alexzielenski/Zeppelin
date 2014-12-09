@@ -62,6 +62,10 @@
 			[self release];
 			return nil;
 		}
+		
+		if ([self.image respondsToSelector: @selector(imageWithRenderingMode:)]) {
+			self.image = [self.image imageWithRenderingMode: UIImageRenderingModeAlwaysTemplate];
+		}
 	}
 	return self;
 }
