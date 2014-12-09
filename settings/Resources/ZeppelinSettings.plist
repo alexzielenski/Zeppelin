@@ -73,7 +73,7 @@
 			<string>PSGroupCell</string>
 			<key>footerText</key>
 			<string>Copyright © 2014 Alex Zielenski.
-Icon by Martin Sørensen.</string>
+Icon by Kyle Revony (@krevony).</string>
 			<key>isStaticText</key>
 			<true/>
 		</dict>
