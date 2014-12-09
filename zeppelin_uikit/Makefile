@@ -1,7 +1,9 @@
+ARCHS := armv7 armv7s arm64
+TARGET := iphone:7.0:7.0
+
 include theos/makefiles/common.mk
 
 TWEAK_NAME = zeppelin_uikit
-zeppelin_uikit_ARCHS = armv7 armv7 arm64
 zeppelin_uikit_FILES = UIImage+MGTint.m Tweak.xm
 zeppelin_uikit_LIBRARIES = substrate
 zeppelin_uikit_CFLAGS = -I../include

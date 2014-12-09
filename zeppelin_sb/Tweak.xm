@@ -1,7 +1,7 @@
 #import "Defines.h"
 
-#import <SpringBoard/SBStatusBarDataManager.h>
-#import <SpringBoard70/SBStatusBarStateAggregator.h>
+#import <SpringBoard42/SBStatusBarDataManager.h>
+#import <SpringBoard/SBStatusBarStateAggregator.h>
 
 #import "ZPImageServer.h"
 
@@ -58,7 +58,6 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
 	if (!server.enabled) {
 		ZLog(@"Disabled");
 		data->operatorDirectory[0] = '\0';
-		data->serviceContentType = 3;
 		return;
 	}
 
@@ -80,7 +79,6 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
     [silver getCString:&data->serviceImages[0][0] maxLength:100 encoding:NSUTF8StringEncoding];
     [black getCString:&data->serviceImages[1][0] maxLength:100 encoding:NSUTF8StringEncoding];
     [dir getCString:&data->operatorDirectory[0] maxLength: 1024 encoding: NSUTF8StringEncoding];
-	data->serviceContentType = 3;
 }
 
 -(BOOL)_setItem:(int)item enabled:(BOOL)enabled {

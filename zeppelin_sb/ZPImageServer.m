@@ -57,43 +57,43 @@
 
 - (NSString *)currentSilverName {
 	NSString *name = nil;
-	if (!(name = RETINIZE([self.settings objectForKey:PrefsAltSilverKey])))
-		name = [NSString zp_silverName];
+	if (!(name = [self maximizeResolution: [self.settings objectForKey:PrefsAltSilverKey]]))
+		name = [self maximizeResolution: [NSString zp_silverName]];
 	return name;
 }
 
 - (NSString *)currentBlackName {
 	NSString *name = nil;
-	if (!(name = RETINIZE([self.settings objectForKey:PrefsAltBlackKey])))
-		name = [NSString zp_blackName];
+	if (!(name = [self maximizeResolution: [self.settings objectForKey:PrefsAltBlackKey]]))
+		name = [self maximizeResolution: [NSString zp_blackName]];
 	return name;
 }
 
 - (NSString *)currentEtchedName {
 	NSString *name = nil;
-	if (!(name = RETINIZE([self.settings objectForKey:PrefsAltEtchedKey])))
-		name = [NSString zp_etchedName];
+	if (!(name = [self maximizeResolution: [self.settings objectForKey:PrefsAltEtchedKey]]))
+		name = [self maximizeResolution: [NSString zp_etchedName]];
 	return name;
 }
 
 - (NSString *)currentLogoName {
 	NSString *name = nil;
-	if (!(name = RETINIZE([self.settings objectForKey:PrefsAltLogoKey])))
-		name = [NSString zp_logoName];
+	if (!(name = [self maximizeResolution: [self.settings objectForKey:PrefsAltLogoKey]]))
+		name = [self maximizeResolution: [NSString zp_logoName]];
 	return name;
 }
 
 - (NSString *)currentDarkName {
 	NSString *name = nil;
-	if (!(name = RETINIZE([self.settings objectForKey:PrefsAltDarkKey])))
-		name = [NSString zp_darkName];
+	if (!(name = [self maximizeResolution: [self.settings objectForKey:PrefsAltDarkKey]]))
+		name = [self maximizeResolution: [NSString zp_darkName]];
 	return name;
 }
 
 - (NSString *)currentLightName {
 	NSString *name = nil;
-	if (!(name = RETINIZE([self.settings objectForKey:PrefsAltLightKey])))
-		name = [NSString zp_lightName];
+	if (!(name = [self maximizeResolution: [self.settings objectForKey:PrefsAltLightKey]]))
+		name = [self maximizeResolution: [NSString zp_lightName]];
 	return name;
 }
 
@@ -126,6 +126,28 @@
 	// if (self.packName)
 		// return [directory stringByAppendingPathComponent: self.packName];
 	return directory;
+}
+
+- (NSString *)scaleName:(NSString *)name toScale:(CGFloat)scale {
+	if (scale == 1.0) {
+		return name;
+	}
+	
+	return [name stringByAppendingFormat: @"@%.0f", scale];
+}
+
+- (NSString *)maximizeResolution:(NSString *)name {
+	// if scale == 3.0, looks for @3x, @2x, and then the 1x
+	CGFloat scale = [[UIScreen mainScreen] respondsToSelector:@selector(scale)] ? [[UIScreen mainScreen] scale] : 1.0;
+	NSString *tentativeName = [self scaleName: name toScale: scale];
+	while (![[NSFileManager defaultManager] fileExistsAtPath: [self.currentThemeDirectory stringByAppendingPathComponent: tentativeName]]) {
+		if (scale == 0)
+			return nil;
+			
+		tentativeName = [self scaleName: name toScale: --scale];
+	}
+	
+	return tentativeName;
 }
 
 - (void)dealloc {

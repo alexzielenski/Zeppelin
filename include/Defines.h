@@ -20,9 +20,10 @@
 #define PrefsUseLegacyKey    @"useLegacy"
 
 #define IN_SPRINGBOARD()     ([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.apple.springboard"])
-#define IS_RETINA()          ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale] == 2)
+// #define IS_RETINA()          ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale] == 2.0)
+// #define IS_3X()              ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale] == 3.0)
 #define PREFS_PATH           [NSString stringWithFormat:@"%@/Library/Preferences/com.alexzielenski.zeppelin.plist", NSHomeDirectory()]
-#define RETINIZE(r)          [(IS_RETINA()) ? [r stringByAppendingString:@"@2x"] : r stringByAppendingPathExtension: @"png"]
+// #define RETINIZE(r)          [(IS_RETINA()) ? [r stringByAppendingString:@"@2x"] : (IS_3X() ? [r stringByAppendingString:@"@3x"] : r stringByAppendingPathExtension: @"png"])
 
 #define kZeppelinSettingsChanged         @"com.alexzielenski.zeppelin/settingsChanged"
 #define kZeppelinSettingsRefreshSettings @"com.alexzielenski.zeppelin/refreshSettings"

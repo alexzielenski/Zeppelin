@@ -6,10 +6,10 @@ A Zeppelin theme includes up to 10 images, all with a distinct purpose. Some ima
 ## Sizing
 
 ###### iOS 4/5/6
-All images should have a high of 20px in 1x and 40px for retina (@2x) – but don’t fille the entire image unless you want it to take the entire height of the statusbar. Also, the image usually needs to be pushed a bit to the right side because for some reason iOS doesn’t have the same amount of padding on both sides.
+All images should have a width of 1px and a height of 20px for legacy devices and 40px for retina (@2x) – but don’t fille the entire image unless you want it to take the entire height of the statusbar. Also, the image usually needs to be pushed a bit to the right side because for some reason iOS doesn’t have the same amount of padding on both sides.
 
 ###### iOS 7+
-Make your images as small as possible within 16px tall (32px on retina) and 40px wide (80px on retina). Trim transparent pixels. Zeppelin takes care of the above padding issue mentioned above.
+Make your images as small as possible within 16px tall (32px on 2x and 48px on 3x) and 40px wide (80px on 2x and 120px on 3x). Trim transparent pixels. Zeppelin takes care of the above padding issue mentioned above.
 
 ## Naming
 
@@ -69,15 +69,19 @@ You do not need to have all of the images present. But here are breakdowns of th
 
 	logo.png
 	logo@2x.png
+	logo@3x.png
 	
 Zeppelin will tint these images depending on the context of the menubar. If you wish to not have your logo tinted at all, instead use these images:
 
 	dark.png        # used when the rest of the colors are dark
 	dark@2x.png
+	dark@3x.png
 	light.png       # used when the rest of the colors are light
 	light@2x.png
+	light@3x.png
 	
 \* Files with the *@2x* suffix are used on retina devices
+\* Files with the *@3x* suffix are used on 3x devices (like iPhone 6+)
 ## Styles
 
 A template can be found [here](https://github.com/alexzielenski/Zeppelin/blob/master/Zeppelin%20Logo%20PSD.psd) with layer styles used for **silver**, **black**, and **etched**.

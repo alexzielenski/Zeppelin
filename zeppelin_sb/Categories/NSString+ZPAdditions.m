@@ -4,27 +4,27 @@
 @implementation NSString (Zeppelin)
 
 + (NSString *)zp_etchedName {
-	return RETINIZE(kEtchedImageName);
+	return kEtchedImageName;
 }
 
 + (NSString *)zp_blackName {
-	return RETINIZE(kBlackImageName);
+	return kBlackImageName;
 }
 
 + (NSString *)zp_silverName {
-	return RETINIZE(kSilverImageName);
+	return kSilverImageName;
 }
 
 + (NSString *)zp_logoName {
-	return RETINIZE(kLogoImageName);
+	return kLogoImageName;
 }
 
 + (NSString *)zp_darkName {
-	return RETINIZE(kDarkImageName);
+	return kDarkImageName;
 }
 
 + (NSString *)zp_lightName {
-	return RETINIZE(kLightImageName);
+	return kLightImageName;
 }
 
 - (NSString *)zp_convertedCarrierImageName {
@@ -41,6 +41,6 @@
 	else
 		file = kSilverImageName;
 		
-	return RETINIZE(file);
+	return file;
 }
 @end
