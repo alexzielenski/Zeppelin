@@ -11,4 +11,6 @@
 
 - (NSString *)zp_convertedCarrierImageName;
 
+- (NSString *)maximizeScaleInDirectory:(NSString *)dir;
+
 @end

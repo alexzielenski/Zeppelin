@@ -1,11 +1,11 @@
 include theos/makefiles/common.mk
 
 BUNDLE_NAME = ZeppelinSettings
-ZeppelinSettings_FILES = ZeppelinSettings.m ZPAlignedTableViewCell.m ZPThemesController.m ZPTheme.m
+ZeppelinSettings_FILES = ../Categories/NSString+ZPAdditions.m ZeppelinSettings.m ZPAlignedTableViewCell.m ZPThemesController.m ZPTheme.m
 ZeppelinSettings_INSTALL_PATH = /Library/PreferenceBundles
 ZeppelinSettings_FRAMEWORKS = UIKit
 ZeppelinSettings_PRIVATE_FRAMEWORKS = Preferences
-ZeppelinSettings_CFLAGS = -I../include
+ZeppelinSettings_CFLAGS = -I../include -I../Categories
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

@@ -43,4 +43,19 @@
 		
 	return file;
 }
+
+- (NSString *)maximizeScaleInDirectory:(NSString *)dir {
+	CGFloat scale = [[UIScreen mainScreen] respondsToSelector:@selector(scale)] ? [[UIScreen mainScreen] scale] : 1.0;
+	NSString *tentativeName = SCALE(self, scale);
+	while (![[NSFileManager defaultManager] fileExistsAtPath: [dir stringByAppendingPathComponent: tentativeName]]) {
+		if (scale == 0) {
+			tentativeName = nil;
+			break;
+		}
+		scale -= 1;
+		tentativeName = SCALE(self, scale);
+	}
+	return tentativeName;
+}
+
 @end

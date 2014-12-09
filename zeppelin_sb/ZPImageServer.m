@@ -1,5 +1,4 @@
 #import "ZPImageServer.h"
-#import "Categories/NSString+ZPAdditions.h"
 
 @interface ZPImageServer ()
 @property (retain, nonatomic) NSDictionary *_settings;
@@ -128,26 +127,8 @@
 	return directory;
 }
 
-- (NSString *)scaleName:(NSString *)name toScale:(CGFloat)scale {
-	if (scale == 1.0) {
-		return name;
-	}
-	
-	return [name stringByAppendingFormat: @"@%.0f", scale];
-}
-
 - (NSString *)maximizeResolution:(NSString *)name {
-	// if scale == 3.0, looks for @3x, @2x, and then the 1x
-	CGFloat scale = [[UIScreen mainScreen] respondsToSelector:@selector(scale)] ? [[UIScreen mainScreen] scale] : 1.0;
-	NSString *tentativeName = [self scaleName: name toScale: scale];
-	while (![[NSFileManager defaultManager] fileExistsAtPath: [self.currentThemeDirectory stringByAppendingPathComponent: tentativeName]]) {
-		if (scale == 0)
-			return nil;
-			
-		tentativeName = [self scaleName: name toScale: --scale];
-	}
-	
-	return tentativeName;
+	return MAXIMIZE(name, self.currentThemeDirectory);
 }
 
 - (void)dealloc {

@@ -1,4 +1,5 @@
 #import <UIKit/UIKit.h>
+#import "NSString+ZPAdditions.h"
 #import <substrate.h>
 
 #define ZLog(format, ...) NSLog(@"Zeppelin: %@", [NSString stringWithFormat: format, ## __VA_ARGS__])
@@ -22,6 +23,8 @@
 #define IN_SPRINGBOARD()     ([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.apple.springboard"])
 // #define IS_RETINA()          ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale] == 2.0)
 // #define IS_3X()              ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale] == 3.0)
+#define SCALE(NAME, SCALE) SCALE == 1.0 ? NAME : [NAME stringByAppendingFormat: @"@%.0f", SCALE]
+#define MAXIMIZE(NAME, DIR) [NAME maximizeScaleInDirectory: DIR]
 #define PREFS_PATH           [NSString stringWithFormat:@"%@/Library/Preferences/com.alexzielenski.zeppelin.plist", NSHomeDirectory()]
 // #define RETINIZE(r)          [(IS_RETINA()) ? [r stringByAppendingString:@"@2x"] : (IS_3X() ? [r stringByAppendingString:@"@3x"] : r stringByAppendingPathExtension: @"png"])
 

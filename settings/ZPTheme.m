@@ -24,13 +24,13 @@
 		// Find out which image to use
 		NSString *silverName;
 		if (IS_IOS_70_OR_LATER()) {
-			silverName = RETINIZE(kLogoImageName);
+			silverName = MAXIMIZE(kLogoImageName, path);
 			self.image = self.whiteImage = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:silverName]];
 
 			// Since I changed the logo format in iOS7 from dark.png and light.png to logo.png
 			// I'm adding support for dark.png to be used as logo.png to avoid many support emails
 			if (!self.image) {
-				silverName = RETINIZE(kDarkImageName);
+				silverName = MAXIMIZE(kDarkImageName, path);
 				self.image = self.whiteImage = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:silverName]];
 			} else {
 				self.shouldTint = YES;
@@ -38,7 +38,7 @@
 		}
 
 		if (!self.image) {
-			silverName = RETINIZE(kSilverImageName);
+			silverName = MAXIMIZE(kSilverImageName, path);
 			self.image = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:silverName]];
 
 			if (self.image) {
@@ -48,11 +48,11 @@
 
 		NSString *blackName;
 		if (!self.whiteImage) {
-			blackName = RETINIZE(kBlackImageName);
+			blackName = MAXIMIZE(kBlackImageName, path);
 			self.whiteImage = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:blackName]];
 
 			if (!self.whiteImage) {
-				blackName = RETINIZE(kEtchedImageName);
+				blackName = MAXIMIZE(kEtchedImageName, path);
 				self.whiteImage = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:blackName]];
 			}
 		}
