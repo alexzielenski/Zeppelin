@@ -63,7 +63,7 @@
 			return nil;
 		}
 		
-		if ([self.image respondsToSelector: @selector(imageWithRenderingMode:)]) {
+		if (self.shouldTint && [self.image respondsToSelector: @selector(imageWithRenderingMode:)]) {
 			self.image = [self.image imageWithRenderingMode: UIImageRenderingModeAlwaysTemplate];
 		}
 	}

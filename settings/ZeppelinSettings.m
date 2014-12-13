@@ -68,6 +68,11 @@
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://twitter.com/alexzielenski"]];
 }
 
+- (void)readme:(id)sender {
+	// NSURL *readmeURL = [NSURL fileURLWithPath: @"/Library/Zeppelin/README.html"];
+	
+}
+
 - (void)respring:(id)sender {
 	// set the enabled value
 	UITableViewCell *cell = [(UITableView*)self.table cellForRowAtIndexPath: [NSIndexPath indexPathForRow:0 inSection:0]];
