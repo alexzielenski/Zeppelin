@@ -48,7 +48,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Zeppelin 2.1.0</string>
+			<string>Zeppelin 2.1.1</string>
 			<key>isStaticText</key>
 			<true/>
 		</dict>
@@ -72,7 +72,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Copyright © 2014 Alex Zielenski.
+			<string>Copyright © 2015 Alex Zielenski.
 Icon by Kyle Revony (@krevony).</string>
 			<key>isStaticText</key>
 			<true/>

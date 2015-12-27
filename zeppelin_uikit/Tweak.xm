@@ -14,6 +14,7 @@
 - (void)zp_cacheImage:(UIImage *)image named:(NSString *)name;
 - (BOOL)zp_shouldTint;
 - (BOOL)zp_isEnabled;
+- (BOOL)isVisible;
 @end
 
 %hook UIStatusBarServiceItemView
@@ -24,8 +25,6 @@ static char kIMAGECACHE;
 
 - (BOOL)updateForNewData:(id)arg1 actions:(int)arg2 {
 	StatusBarData70 *data = (StatusBarData70*)[arg1 rawData];
-
-	[self updateContentsAndWidth];
 
 	[self willChangeValueForKey: @"contentsImage"];
 	objc_setAssociatedObject(self, &kOPERATORDIRECTORY, [NSString stringWithCString: data->operatorDirectory encoding: NSUTF8StringEncoding], OBJC_ASSOCIATION_RETAIN_NONATOMIC);

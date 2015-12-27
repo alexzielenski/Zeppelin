@@ -1,7 +1,2 @@
 #!/bin/bash
-# Move Zeppelin logos to /var/stash on the data partition
-# if [ ! -L "/Library/Zeppelin" ]
-# then
-#     /usr/libexec/cydia/move.sh /Library/Zeppelin
-# fi
 exit 0

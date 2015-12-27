@@ -51,7 +51,8 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
 
 	ZPImageServer *server = [ZPImageServer sharedServer];
 	StatusBarData70 *data = &MSHookIvar<StatusBarData70>(self, "_data");
-    ZLog(@"update service item (content type: %d", data->serviceContentType);
+
+    ZLog(@"update service item");
     
     [(server.carrierText) ? server.carrierText : MSHookIvar<NSString *>(self , "_serviceString") getCString:&data->serviceString[0] maxLength:100 encoding:NSUTF8StringEncoding];
 
@@ -62,7 +63,7 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
 		return;
 	}
 
-	NSString *black; 
+	NSString *black;
 	NSString *silver = server.currentLogoName;
 
     if (server.shouldTint) {
@@ -87,8 +88,8 @@ static inline void setSettingsNotification(CFNotificationCenterRef center,
     ZPImageServer *server = [ZPImageServer sharedServer];
         
     if (item == 4 && [server noLogo] && server.isEnabled && enabled) {
-            ZLog(@"Disabling Item: %i", item);
-            return %orig(item, NO);
+        ZLog(@"Disabling Item: %i", item);
+        return %orig(item, NO);
     }
 
     return %orig(item, enabled);

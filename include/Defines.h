@@ -45,6 +45,7 @@
 - (BOOL)iOSVersionIsAtLeast:(NSString *)vers;
 @end
 
+#define IS_IOS_90_OR_LATER() [[UIDevice currentDevice] iOSVersionIsAtLeast: @"9.0"]
 #define IS_IOS_70_OR_LATER() [[UIDevice currentDevice] iOSVersionIsAtLeast: @"7.0"]
 #define IS_IOS_60()          ([[UIDevice currentDevice] iOSVersionIsAtLeast: @"6.0"] && !IS_IOS_70_OR_LATER())
 #define IS_IOS_50()          ([[UIDevice currentDevice] iOSVersionIsAtLeast: @"5.0"] && !IS_IOS_60() && !IS_IOS_70_OR_LATER())
@@ -69,6 +70,40 @@ typedef struct {
     int thermalColor;
     char operatorDirectory[1024];
 } StatusBarDataCommon;
+
+typedef struct {
+    BOOL itemIsEnabled[27];
+    char timeString[64];
+    int gsmSignalStrengthRaw;
+    int gsmSignalStrengthBars;
+    char serviceString[100];
+    char serviceCrossfadeString[100];
+    char serviceImages[2][100];
+    char operatorDirectory[1024];
+    unsigned int serviceContentType;
+    int wifiSignalStrengthRaw;
+    int wifiSignalStrengthBars;
+    unsigned int dataNetworkType;
+    int batteryCapacity;
+    unsigned int batteryState;
+    char batteryDetailString[150];
+    int bluetoothBatteryCapacity;
+    int thermalColor;
+    unsigned int thermalSunlightMode:1;
+    unsigned int slowActivity:1;
+    unsigned int syncActivity:1;
+    char activityDisplayId[256];
+    unsigned int bluetoothConnected:1;
+    unsigned int displayRawGSMSignal:1;
+    unsigned int displayRawWifiSignal:1;
+    unsigned int locationIconType:1;
+    unsigned int quietModeInactive:1;
+    unsigned int tetheringConnectionCount;
+    unsigned int batterySaverModeActive:1;
+    char breadcrumbTitle[256];
+    char breadcrumbSecondaryTitle[256];
+} StatusBarData90;
+
 
 typedef struct {
     BOOL itemIsEnabled[25];

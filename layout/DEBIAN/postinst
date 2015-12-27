@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Move Zeppelin logos to /var/stash on the data partition
+echo "Stashing Logos..."
+
+if [ ! -L "/Library/Zeppelin" ]; then
+    /usr/libexec/cydia/move.sh /Library/Zeppelin
+fi
+
 if [ -d /Library/Zeppelin ]; then
 	echo "Repairing permissions for themes..."
 	chown -R mobile:mobile /Library/Zeppelin
